@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLASS CLASH - Student vs Teacher PvP</title>
+    <style>
+        /* Modern with Retro Accents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a1929 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Subtle CRT Effect for Battles Only */
+        .crt-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.15;
+            mix-blend-mode: overlay;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            display: none;
+        }
+
+        .battle-screen .crt-effect {
+            display: block;
+        }
+
+        /* Screen Containers - Modern with Scroll */
+        .screen {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: transparent;
+            overflow-y: auto;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* Container for content with proper padding */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Home Screen - Modern Gaming Style */
+        #home-screen {
+            background: linear-gradient(rgba(10, 25, 41, 0.9), rgba(26, 26, 46, 0.9)), 
+                        url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1600') center/cover;
+        }
+
+        .game-title {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            background: linear-gradient(45deg, #00d4ff, #0088ff, #ff00cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-subtitle {
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            margin-bottom: 2rem;
+            color: #8ab4f8;
+            text-align: center;
+            font-weight: 300;
+        }
+
+        .logo-container {
+            width: clamp(120px, 30vw, 200px);
+            height: clamp(120px, 30vw, 200px);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem auto;
+            position: relative;
+            box-shadow: 
+                0 10px 30px rgba(0, 132, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .logo {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #0088ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #0066ff 0%, #0088ff 100%);
+            color: white;
+            border: none;
+            padding: 16px 60px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 2rem;
+            border-radius: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 
+                0 4px 20px rgba(0, 102, 255, 0.4),
+                0 0 30px rgba(0, 102, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 25px rgba(0, 102, 255, 0.6),
+                0 0 40px rgba(0, 102, 255, 0.3);
+            background: linear-gradient(135deg, #0088ff 0%, #00aaff 100%);
+        }
+
+        .start-btn:active {
+            transform: translateY(0);
+        }
+
+        .start-btn::before {
+            content: '▶';
+            position: absolute;
+            left: 20px;
+            opacity: 0.8;
+        }
+
+        /* Dashboard Screen - Modern Scrollable Layout */
+        #dashboard-screen {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .dashboard-title {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            background: linear-gradient(45deg, #00d4ff, #0088ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .dashboard-section {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: #8ab4f8;
+            margin-bottom: 1.5rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Character Selection - Modern Cards */
+        .characters-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .character-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(100, 116, 139, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-card:hover {
+            transform: translateY(-5px);
+            border-color: #00d4ff;
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .character-card.selected {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 136, 255, 0.1));
+            border-color: #00d4ff;
+            box-shadow: 
+                0 10px 25px rgba(0, 212, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .character-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #00d4ff;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            object-fit: cover;
+            border: 2px solid rgba(100, 116, 139, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .character-card.selected .character-img {
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .character-name {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* Controls Menu - Modern Accordion */
+        .controls-menu {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .controls-menu:hover {
+            border-color: #00d4ff;
+        }
+
+        .controls-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .controls-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            margin-top: 0;
+        }
+
+        .controls-content.expanded {
+            max-height: 400px;
+            margin-top: 20px;
+        }
+
+        .control-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(100, 116, 139, 0.2);
+        }
+
+        .control-key {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            padding: 6px 14px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        /* Special Attack Cooldown Display */
+        .special-cooldown {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            text-align: center;
+        }
+
+        .cooldown-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 6px;
+            margin-top: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .cooldown-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #00d4ff, #0088ff);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        /* High Scores - Modern List */
+        .highscore-list {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .highscore-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .highscore-list::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 3px;
+        }
+
+        .highscore-list::-webkit-scrollbar-thumb {
+            background: #00d4ff;
+            border-radius: 3px;
+        }
+
+        .highscore-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 10px;
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .highscore-item:hover {
+            transform: translateX(5px);
+            border-color: #00d4ff;
+        }
+
+        .score-rank {
+            background: linear-gradient(135deg, #00d4ff, #0088ff);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        /* Selected Display */
+        #selected-display {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 136, 255, 0.1));
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            text-align: center;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            justify-content: center;
+            width: 100%;
+            grid-column: 1 / -1;
+            padding-bottom: 40px;
+        }
+
+        .action-btn {
+            padding: 16px 40px;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            min-width: 180px;
+        }
+
+        .battle-btn {
+            background: linear-gradient(135deg, #00d4ff 0%, #0088ff 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .back-btn {
+            background: rgba(100, 116, 139, 0.2);
+            color: #cbd5e1;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .battle-btn:hover {
+            box-shadow: 0 6px 25px rgba(0, 212, 255, 0.6);
+            background: linear-gradient(135deg, #0088ff 0%, #00aaff 100%);
+        }
+
+        .back-btn:hover {
+            background: rgba(100, 116, 139, 0.3);
+            border-color: #00d4ff;
+        }
+
+        /* Battle Screen - Modern Arena */
+        #battle-screen {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            overflow: hidden;
+        }
+
+        .battle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 20px;
+            padding: 20px;
+            flex-wrap: wrap;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .player-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 45%;
+            min-width: 180px;
+        }
+
+        .player-name {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .player-name.student {
+            color: #00d4ff;
+        }
+
+        .player-name.teacher {
+            color: #ff6b9d;
+        }
+
+        .health-container {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.8);
+            height: 20px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .health-bar {
+            height: 100%;
+            width: 100%;
+            border-radius: 9px;
+            transition: width 0.3s ease;
+            position: relative;
+            background: linear-gradient(90deg, #00ff88, #00d4ff);
+        }
+
+        .teacher-health {
+            background: linear-gradient(90deg, #ff6b9d, #ff00cc);
+        }
+
+        .health-text {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .versus {
+            font-size: 1.8rem;
+            color: #ffd700;
+            font-weight: 800;
+            width: 10%;
+            min-width: 60px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Battle Arena */
+        .battle-arena {
+            width: 100%;
+            max-width: 1000px;
+            height: clamp(300px, 60vh, 500px);
+            background: rgba(10, 10, 15, 0.9);
+            position: relative;
+            margin: 20px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 
+                inset 0 0 50px rgba(0, 0, 0, 0.5),
+                0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Character Squares - Modern Style */
+        .character-square {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.1s ease;
+            z-index: 10;
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .student-square {
+            border: 3px solid #00d4ff;
+            box-shadow: 
+                0 0 20px rgba(0, 212, 255, 0.6),
+                inset 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .teacher-square {
+            border: 3px solid #ff6b9d;
+            box-shadow: 
+                0 0 20px rgba(255, 107, 157, 0.6),
+                inset 0 0 20px rgba(255, 107, 157, 0.2);
+        }
+
+        /* Projectiles */
+        .projectile {
+            position: absolute;
+            z-index: 5;
+            pointer-events: none;
+            border-radius: 50%;
+        }
+
+        .student-projectile {
+            width: 10px;
+            height: 10px;
+            background: #00d4ff;
+            box-shadow: 0 0 10px #00d4ff;
+        }
+
+        .teacher-projectile {
+            width: 10px;
+            height: 10px;
+            background: #ff6b9d;
+            box-shadow: 0 0 10px #ff6b9d;
+        }
+
+        .special-projectile {
+            width: 16px;
+            height: 16px;
+            background: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+            animation: spin 0.5s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Damage Numbers */
+        .damage-text {
+            position: absolute;
+            color: #ff4444;
+            font-weight: 800;
+            font-size: 1.1rem;
+            z-index: 20;
+            pointer-events: none;
+            animation: floatUp 1s forwards;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-50px) scale(1.2); }
+        }
+
+        /* Battle Stats */
+        .battle-stats {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            min-width: 150px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #8ab4f8;
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            color: #00d4ff;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Special Attack Status */
+        .special-status {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            min-width: 180px;
+        }
+
+        .special-ready {
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .special-cooldown-battle {
+            color: #ff4444;
+            font-weight: 600;
+        }
+
+        .cooldown-bar-battle {
+            width: 100%;
+            height: 10px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .cooldown-fill-battle {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            border-radius: 4px;
+            transition: width 0.1s linear;
+        }
+
+        /* Next Teacher Spawn */
+        .next-teacher-spawn {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 15, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .spawn-title {
+            font-size: 2rem;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .spawn-timer {
+            font-size: 4rem;
+            color: #ffd700;
+            font-weight: 800;
+            text-align: center;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Mobile Controls */
+        .mobile-controls {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            z-index: 1000;
+        }
+
+        .mobile-controls-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 320px;
+            margin: 0 auto;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .mobile-btn {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            padding: 16px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .mobile-btn:active {
+            background: rgba(0, 212, 255, 0.3);
+            transform: scale(0.95);
+        }
+
+        /* Results Screen */
+        #results-screen {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .result-title {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            background: linear-gradient(45deg, #00d4ff, #0088ff, #ff00cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .winner-name {
+            font-size: clamp(1.5rem, 5vw, 2.8rem);
+            color: #ffd700;
+            margin: 2rem 0;
+            text-align: center;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 3rem 0;
+        }
+
+        .stat-box {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: #00d4ff;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .result-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 3rem;
+            justify-content: center;
+            padding-bottom: 40px;
+        }
+
+        .result-btn {
+            padding: 16px 40px;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #00d4ff 0%, #0088ff 100%);
+            color: white;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            min-width: 180px;
+        }
+
+        .result-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-container {
+                padding: 15px;
+            }
+            
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .characters-container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .character-img {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .battle-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .player-info {
+                width: 100%;
+            }
+            
+            .versus {
+                width: 100%;
+                order: -1;
+            }
+            
+            .character-square {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .mobile-controls {
+                display: block;
+            }
+            
+            .battle-stats,
+            .special-status {
+                position: relative;
+                top: auto;
+                right: auto;
+                bottom: auto;
+                left: auto;
+                margin: 10px auto;
+                width: calc(100% - 40px);
+                max-width: 400px;
+            }
+            
+            .action-buttons,
+            .result-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn,
+            .result-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-container {
+                padding: 10px;
+            }
+            
+            .characters-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .character-card {
+                padding: 12px;
+            }
+            
+            .character-img {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .battle-arena {
+                height: 300px;
+            }
+            
+            .mobile-controls-grid {
+                padding: 15px;
+            }
+            
+            .mobile-btn {
+                padding: 14px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- CRT Effect (Battle Only) -->
+    <div class="crt-effect"></div>
+    
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen active">
+        <div class="content-container">
+            <h1 class="game-title">CLASS CLASH</h1>
+            <p class="game-subtitle">STUDENT VS TEACHER PvP ARENA</p>
+            
+            <div class="logo-container">
+                <div class="logo">VS</div>
+            </div>
+            
+            <div style="max-width: 600px; margin: 2rem auto; text-align: center;">
+                <p style="font-size: 1.1rem; line-height: 1.6; color: #94a3b8; margin-bottom: 1.5rem;">
+                    Choose your student warrior and battle waves of teachers in this fast-paced PvP arena!
+                    Survive as long as possible and climb the leaderboards.
+                </p>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="start-btn" onclick="showScreen('dashboard-screen')">
+                    START GAME
+                </button>
+            </div>
+            
+            <div style="margin-top: 3rem; text-align: center;">
+                <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; color: #00d4ff; font-weight: 700;">8</div>
+                        <div style="font-size: 0.9rem; color: #94a3b8;">STUDENTS</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; color: #ff6b9d; font-weight: 700;">5</div>
+                        <div style="font-size: 0.9rem; color: #94a3b8;">TEACHERS</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; color: #ffd700; font-weight: 700;">∞</div>
+                        <div style="font-size: 0.9rem; color: #94a3b8;">WAVES</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Screen -->
+    <div id="dashboard-screen" class="screen">
+        <div class="content-container">
+            <h1 class="dashboard-title">CHARACTER SELECTION</h1>
+            
+            <div class="dashboard-container">
+                <!-- Character Selection -->
+                <div class="dashboard-section">
+                    <h2 class="section-title">Student Warriors</h2>
+                    <p style="margin-bottom: 1.5rem; color: #94a3b8; font-size: 1rem;">Select your student champion for battle</p>
+                    
+                    <div class="characters-container" id="student-characters">
+                        <!-- Students loaded by JavaScript -->
+                    </div>
+                    
+                    <h2 class="section-title" style="margin-top: 2rem;">Teacher Opponents</h2>
+                    <p style="margin-bottom: 1.5rem; color: #94a3b8; font-size: 1rem;">Randomly selected each round</p>
+                    
+                    <div class="characters-container" id="teacher-characters">
+                        <!-- Teachers loaded by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Controls & High Scores -->
+                <div class="dashboard-section">
+                    <h2 class="section-title">Game Controls</h2>
+                    
+                    <div class="controls-menu" id="controls-menu" onclick="toggleControls()">
+                        <div class="controls-menu-header">
+                            <h3 style="color: #00d4ff; margin: 0; font-size: 1rem;">Control Panel</h3>
+                            <span style="color: #00d4ff; font-size: 1.2rem;" id="controls-arrow">▼</span>
+                        </div>
+                        <div class="controls-content" id="controls-content">
+                            <div class="control-item">
+                                <span style="color: #cbd5e1;">Movement</span>
+                                <span class="control-key">WASD</span>
+                            </div>
+                            <div class="control-item">
+                                <span style="color: #cbd5e1;">Fire Projectile</span>
+                                <span class="control-key">SPACE</span>
+                            </div>
+                            <div class="control-item">
+                                <span style="color: #cbd5e1;">Special Attack</span>
+                                <span class="control-key">SHIFT</span>
+                            </div>
+                            <div class="control-item">
+                                <span style="color: #cbd5e1;">Pause Game</span>
+                                <span class="control-key">ESC</span>
+                            </div>
+                            <div class="special-cooldown">
+                                <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 8px;">Special Attack Cooldown</div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span style="color: #00d4ff; font-size: 0.9rem;">Ready</span>
+                                    <span style="color: #94a3b8; font-size: 0.9rem;" id="cooldown-time">5s</span>
+                                </div>
+                                <div class="cooldown-bar">
+                                    <div class="cooldown-fill" id="cooldown-fill" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h2 class="section-title" style="margin-top: 2rem;">Leaderboard</h2>
+                    <ul class="highscore-list" id="highscore-list">
+                        <!-- High scores loaded by JavaScript -->
+                    </ul>
+                    
+                    <div id="selected-display" style="margin-top: 2rem;">
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 8px;">Currently Selected</p>
+                        <p style="color: #00d4ff; font-size: 1.1rem; font-weight: 600;" id="selected-text">No student selected</p>
+                        <p style="color: #64748b; font-size: 0.8rem; margin-top: 5px;">Click on a student to select</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn back-btn" onclick="showScreen('home-screen')">
+                    BACK TO MENU
+                </button>
+                <button class="action-btn battle-btn" onclick="startBattle()">
+                    START BATTLE
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Battle Screen -->
+    <div id="battle-screen" class="screen">
+        <div class="content-container">
+            <div class="battle-header">
+                <div class="player-info">
+                    <div class="player-name student" id="student-name">STUDENT</div>
+                    <div class="health-container">
+                        <div class="health-bar" id="student-health-bar" style="width: 100%"></div>
+                    </div>
+                    <div class="health-text" id="student-health-text">100/100</div>
+                </div>
+                
+                <div class="versus">VS</div>
+                
+                <div class="player-info">
+                    <div class="player-name teacher" id="teacher-name">TEACHER</div>
+                    <div class="health-container">
+                        <div class="health-bar teacher-health" id="teacher-health-bar" style="width: 100%"></div>
+                    </div>
+                    <div class="health-text" id="teacher-health-text">100/100</div>
+                </div>
+            </div>
+            
+            <!-- Battle Stats -->
+            <div class="battle-stats">
+                <div class="stat-item">
+                    <span>Round:</span>
+                    <span class="stat-value" id="round-count">1</span>
+                </div>
+                <div class="stat-item">
+                    <span>Defeated:</span>
+                    <span class="stat-value" id="teachers-defeated">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Score:</span>
+                    <span class="stat-value" id="current-score">0</span>
+                </div>
+            </div>
+            
+            <!-- Special Attack Status -->
+            <div class="special-status" id="special-status">
+                <div id="special-text" class="special-ready">Special Ready</div>
+                <div class="cooldown-bar-battle">
+                    <div class="cooldown-fill-battle" id="special-cooldown-bar" style="width: 100%"></div>
+                </div>
+            </div>
+            
+            <!-- Battle Arena -->
+            <div class="battle-arena" id="battle-arena">
+                <!-- Characters will be positioned here -->
+            </div>
+            
+            <!-- Next Teacher Spawn -->
+            <div class="next-teacher-spawn" id="next-teacher-spawn">
+                <div class="spawn-title">NEXT CHALLENGER</div>
+                <div class="spawn-timer" id="spawn-timer">3</div>
+            </div>
+            
+            <!-- Mobile Controls -->
+            <div class="mobile-controls">
+                <div class="mobile-controls-grid">
+                    <button class="mobile-btn" ontouchstart="moveStudent('up')" ontouchend="stopMoveStudent()">↑</button>
+                    <button class="mobile-btn" ontouchstart="shootProjectile()">FIRE</button>
+                    <button class="mobile-btn" ontouchstart="moveStudent('right')" ontouchend="stopMoveStudent()">→</button>
+                    <button class="mobile-btn" ontouchstart="moveStudent('left')" ontouchend="stopMoveStudent()">←</button>
+                    <button class="mobile-btn" ontouchstart="specialAttack()">SPECIAL</button>
+                    <button class="mobile-btn" ontouchstart="moveStudent('down')" ontouchend="stopMoveStudent()">↓</button>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="action-btn back-btn" onclick="showScreen('dashboard-screen')" style="max-width: 200px;">
+                    QUIT BATTLE
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen">
+        <div class="content-container">
+            <h1 class="result-title" id="result-title">GAME OVER</h1>
+            
+            <div style="font-size: 1.2rem; color: #94a3b8; margin-bottom: 1rem; text-align: center;">
+                <span id="winner-text">STUDENT WINS</span>
+            </div>
+            
+            <div class="winner-name" id="winner-name">ANIK</div>
+            
+            <div class="result-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="teachers-defeated-result">0</div>
+                    <div style="font-size: 0.9rem; color: #94a3b8;">TEACHERS DEFEATED</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-value" id="total-score">0</div>
+                    <div style="font-size: 0.9rem; color: #94a3b8;">TOTAL SCORE</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-value" id="battle-time">0</div>
+                    <div style="font-size: 0.9rem; color: #94a3b8;">SECONDS</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-value" id="round-result">1</div>
+                    <div style="font-size: 0.9rem; color: #94a3b8;">ROUND REACHED</div>
+                </div>
+            </div>
+            
+            <div style="max-width: 500px; margin: 2rem auto; padding: 20px; background: rgba(15, 23, 42, 0.8); border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.3);">
+                <h3 style="color: #00d4ff; margin-bottom: 1rem; font-size: 1rem; text-align: center;">BATTLE REPORT</h3>
+                <p id="battle-summary" style="color: #94a3b8; line-height: 1.5; font-size: 0.9rem; text-align: center;">
+                    Battle complete. Great effort!
+                </p>
+            </div>
+            
+            <div class="result-buttons">
+                <button class="result-btn rematch-btn" onclick="rematch()">
+                    PLAY AGAIN
+                </button>
+                <button class="result-btn dashboard-result-btn" onclick="showScreen('dashboard-screen')">
+                    NEW GAME
+                </button>
+                <button class="result-btn" onclick="showScreen('home-screen')" style="background: linear-gradient(135deg, #64748b, #475569);">
+                    MAIN MENU
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game Data with Modern Updates
+        const gameData = {
+            students: [
+                { id: 1, name: "ANIK", image: "https://i.postimg.cc/TPB0TWRV/Anik-Avatar.png", health: 100 },
+                { id: 2, name: "MAYANK", image: "https://i.postimg.cc/R02dvnMg/Mayankesh-Avatar.png", health: 100 },
+                { id: 3, name: "PARTH", image: "https://i.postimg.cc/s2bm3ZVn/Parth-Avatar.png", health: 100 },
+                { id: 4, name: "PRANSHU", image: "https://i.postimg.cc/CK97wfFP/Pranshu-Avatar.png", health: 100 },
+                { id: 5, name: "RUDRA", image: "https://i.postimg.cc/7Lj9qTxt/Rudra-Avatar.png", health: 100 },
+                { id: 6, name: "SARTHAK", image: "https://i.postimg.cc/V6MRvL6g/Sarthak-Avatar.png", health: 100 },
+                { id: 7, name: "TAMMO", image: "https://i.postimg.cc/1t6HX5tJ/Tammo-Avatar.png", health: 100 },
+                { id: 8, name: "HARSHEEL", image: "https://i.postimg.cc/nc6hYFcW/Harsheel-Avatar.png", health: 100 }
+            ],
+            
+            teachers: [
+                { id: 1, name: "MODI", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025060327-r6rcu4tcow2792mxfyhpiqsdvhwx3404m54ulstj68.jpg", health: 100 },
+                { id: 2, name: "SREELEKHA", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025010794-qzna93shqidolax0h8t6k8jrq043flyqiykdecc4nq.jpg", health: 100 },
+                { id: 3, name: "RN", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111148-e1731362737713-qwx4nhtuky0i39z196vfw50rfg38jumphujxu7akqg.jpg", health: 100 },
+                { id: 4, name: "ANUJ", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111430-qx1c1ll9iusns9e4h1118too8d7vcf61hd0bzydat2.jpg", health: 100 },
+                { id: 5, name: "PUNIT", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111466-qx1c1uznf75j0d0gy53axrba67xjhe7cunj6spzd2u.jpg", health: 100 }
+            ],
+            
+            highScores: [
+                { name: "ANIK", score: 18500, teachersDefeated: 15, round: 16 },
+                { name: "PARTH", score: 14200, teachersDefeated: 12, round: 13 },
+                { name: "HARSHEEL", score: 12500, teachersDefeated: 11, round: 12 },
+                { name: "SARTHAK", score: 9500, teachersDefeated: 8, round: 9 },
+                { name: "TAMMO", score: 7200, teachersDefeated: 6, round: 7 }
+            ],
+            
+            selectedStudent: null,
+            currentTeacher: null,
+            
+            battle: {
+                studentHealth: 100,
+                teacherHealth: 100,
+                gameActive: false,
+                startTime: null,
+                totalScore: 0,
+                teachersDefeated: 0,
+                currentRound: 1,
+                studentPosition: { x: 50, y: 150 },
+                teacherPosition: { x: 300, y: 150 },
+                keysPressed: {},
+                projectiles: [],
+                isSpawning: false,
+                moveDirection: null,
+                specialAttackReady: true,
+                specialCooldown: 0,
+                specialMaxCooldown: 5000,
+                specialCooldownInterval: null
+            }
+        };
+
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStudents();
+            loadTeachers();
+            loadHighScores();
+            
+            // Set up keyboard controls
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+            
+            // Game loop
+            setInterval(gameLoop, 1000/60);
+            
+            // Update special cooldown
+            setInterval(updateSpecialCooldown, 100);
+        });
+
+        // Toggle controls menu
+        function toggleControls() {
+            const content = document.getElementById('controls-content');
+            const arrow = document.getElementById('controls-arrow');
+            
+            content.classList.toggle('expanded');
+            arrow.textContent = content.classList.contains('expanded') ? '▲' : '▼';
+        }
+
+        // Load students
+        function loadStudents() {
+            const container = document.getElementById('student-characters');
+            container.innerHTML = '';
+            
+            gameData.students.forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'character-card';
+                card.onclick = () => selectStudent(student);
+                
+                // Create image with error handling
+                const img = document.createElement('img');
+                img.className = 'character-img';
+                img.src = student.image;
+                img.alt = student.name;
+                img.onerror = function() {
+                    this.src = `https://ui-avatars.com/api/?name=${student.name}&background=0ea5e9&color=fff&size=80`;
+                };
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = student.name;
+                
+                card.appendChild(img);
+                card.appendChild(nameDiv);
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Load teachers
+        function loadTeachers() {
+            const container = document.getElementById('teacher-characters');
+            container.innerHTML = '';
+            
+            gameData.teachers.forEach(teacher => {
+                const card = document.createElement('div');
+                card.className = 'character-card';
+                
+                const img = document.createElement('img');
+                img.className = 'character-img';
+                img.src = teacher.image;
+                img.alt = teacher.name;
+                img.onerror = function() {
+                    this.src = `https://ui-avatars.com/api/?name=${teacher.name}&background=ec4899&color=fff&size=80`;
+                };
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = teacher.name;
+                
+                card.appendChild(img);
+                card.appendChild(nameDiv);
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Load high scores
+        function loadHighScores() {
+            const container = document.getElementById('highscore-list');
+            container.innerHTML = '';
+            
+            gameData.highScores.forEach((score, index) => {
+                const item = document.createElement('li');
+                item.className = 'highscore-item';
+                
+                item.innerHTML = `
+                    <div class="score-rank">${index + 1}</div>
+                    <div style="flex-grow: 1;">
+                        <div style="font-weight: 600; color: #00d4ff; font-size: 1rem;">${score.name}</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8;">Round ${score.round} • ${score.teachersDefeated} teachers</div>
+                    </div>
+                    <div style="font-weight: 700; color: #ffd700; font-size: 1.1rem;">${score.score.toLocaleString()}</div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+
+        // Select student
+        function selectStudent(student) {
+            gameData.selectedStudent = student;
+            
+            // Update UI
+            document.querySelectorAll('#student-characters .character-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // Update selected display
+            document.getElementById('selected-text').innerHTML = `
+                <span style="color: #00d4ff;">${student.name}</span>
+                <span style="display: block; font-size: 0.9rem; color: #94a3b8; margin-top: 5px;">Ready for battle</span>
+            `;
+        }
+
+        // Switch screens
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show requested screen
+            document.getElementById(screenId).classList.add('active');
+            
+            // Initialize battle if going to battle screen
+            if (screenId === 'battle-screen') {
+                if (gameData.selectedStudent) {
+                    initializeBattle();
+                } else {
+                    alert('Please select a student first!');
+                    showScreen('dashboard-screen');
+                }
+            }
+            
+            // Reset keys
+            gameData.battle.keysPressed = {};
+        }
+
+        // Start battle
+        function startBattle() {
+            if (!gameData.selectedStudent) {
+                alert('Please select a student first!');
+                return;
+            }
+            
+            showScreen('battle-screen');
+        }
+
+        // Initialize battle
+        function initializeBattle() {
+            // Reset battle state
+            gameData.battle = {
+                studentHealth: 100,
+                teacherHealth: 100,
+                gameActive: true,
+                startTime: Date.now(),
+                totalScore: 0,
+                teachersDefeated: 0,
+                currentRound: 1,
+                studentPosition: { x: 50, y: 150 },
+                teacherPosition: { x: 300, y: 150 },
+                keysPressed: {},
+                projectiles: [],
+                isSpawning: false,
+                moveDirection: null,
+                specialAttackReady: true,
+                specialCooldown: 0,
+                specialMaxCooldown: 5000,
+                specialCooldownInterval: null
+            };
+            
+            // Set student
+            document.getElementById('student-name').textContent = gameData.selectedStudent.name;
+            
+            // Select random teacher
+            selectRandomTeacher();
+            
+            // Create character squares
+            createCharacterSquares();
+            
+            // Reset special attack
+            updateSpecialUI();
+            
+            // Update UI
+            updateBattleUI();
+            updateHealthBars();
+        }
+
+        // Select random teacher
+        function selectRandomTeacher() {
+            const availableTeachers = gameData.teachers.filter(teacher => 
+                !gameData.currentTeacher || teacher.id !== gameData.currentTeacher.id
+            );
+            
+            const randomIndex = Math.floor(Math.random() * availableTeachers.length);
+            gameData.currentTeacher = availableTeachers[randomIndex];
+            
+            document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
+        }
+
+        // Create character squares
+        function createCharacterSquares() {
+            const arena = document.getElementById('battle-arena');
+            arena.innerHTML = '';
+            
+            // Create student square
+            const studentSquare = document.createElement('div');
+            studentSquare.className = 'character-square student-square';
+            studentSquare.id = 'student-square';
+            studentSquare.style.left = gameData.battle.studentPosition.x + 'px';
+            studentSquare.style.top = gameData.battle.studentPosition.y + 'px';
+            studentSquare.style.backgroundImage = `url('${gameData.selectedStudent.image}')`;
+            arena.appendChild(studentSquare);
+            
+            // Create teacher square
+            const teacherSquare = document.createElement('div');
+            teacherSquare.className = 'character-square teacher-square';
+            teacherSquare.id = 'teacher-square';
+            teacherSquare.style.left = gameData.battle.teacherPosition.x + 'px';
+            teacherSquare.style.top = gameData.battle.teacherPosition.y + 'px';
+            teacherSquare.style.backgroundImage = `url('${gameData.currentTeacher.image}')`;
+            arena.appendChild(teacherSquare);
+        }
+
+        // Update battle UI
+        function updateBattleUI() {
+            document.getElementById('round-count').textContent = gameData.battle.currentRound;
+            document.getElementById('teachers-defeated').textContent = gameData.battle.teachersDefeated;
+            document.getElementById('current-score').textContent = gameData.battle.totalScore.toLocaleString();
+        }
+
+        // Update health bars
+        function updateHealthBars() {
+            const studentHealthPercent = (gameData.battle.studentHealth / 100) * 100;
+            const teacherHealthPercent = (gameData.battle.teacherHealth / 100) * 100;
+            
+            document.getElementById('student-health-bar').style.width = `${studentHealthPercent}%`;
+            document.getElementById('teacher-health-bar').style.width = `${teacherHealthPercent}%`;
+            
+            document.getElementById('student-health-text').textContent = 
+                `${Math.max(0, gameData.battle.studentHealth)}/100`;
+            document.getElementById('teacher-health-text').textContent = 
+                `${Math.max(0, gameData.battle.teacherHealth)}/100`;
+            
+            // Check win conditions
+            if (gameData.battle.teacherHealth <= 0) {
+                teacherDefeated();
+            } else if (gameData.battle.studentHealth <= 0) {
+                endBattle('teacher');
+            }
+        }
+
+        // Handle keyboard input
+        function handleKeyDown(event) {
+            if (!gameData.battle.gameActive) return;
+            
+            const key = event.key.toLowerCase();
+            gameData.battle.keysPressed[key] = true;
+            
+            // Shoot on space
+            if (key === ' ' && !event.repeat) {
+                shootProjectile();
+                event.preventDefault();
+            }
+            
+            // Special attack on shift
+            if (key === 'shift' && gameData.battle.specialAttackReady && !event.repeat) {
+                specialAttack();
+            }
+            
+            // Pause on escape
+            if (key === 'escape') {
+                // You could add a pause feature here
+                alert('Game paused - Press OK to continue');
+            }
+        }
+
+        function handleKeyUp(event) {
+            const key = event.key.toLowerCase();
+            gameData.battle.keysPressed[key] = false;
+        }
+
+        // Update special cooldown
+        function updateSpecialCooldown() {
+            if (!gameData.battle.gameActive) return;
+            
+            if (!gameData.battle.specialAttackReady) {
+                gameData.battle.specialCooldown -= 100;
+                
+                if (gameData.battle.specialCooldown <= 0) {
+                    gameData.battle.specialAttackReady = true;
+                    gameData.battle.specialCooldown = 0;
+                }
+                
+                updateSpecialUI();
+            }
+        }
+
+        // Update special attack UI
+        function updateSpecialUI() {
+            const cooldownPercent = (gameData.battle.specialCooldown / gameData.battle.specialMaxCooldown) * 100;
+            const remainingSeconds = Math.ceil(gameData.battle.specialCooldown / 1000);
+            
+            // Update dashboard cooldown
+            document.getElementById('cooldown-time').textContent = remainingSeconds > 0 ? `${remainingSeconds}s` : 'Ready';
+            document.getElementById('cooldown-fill').style.width = `${100 - cooldownPercent}%`;
+            
+            // Update battle cooldown
+            const specialText = document.getElementById('special-text');
+            const specialBar = document.getElementById('special-cooldown-bar');
+            
+            if (gameData.battle.specialAttackReady) {
+                specialText.textContent = 'Special Ready';
+                specialText.className = 'special-ready';
+                specialBar.style.width = '100%';
+            } else {
+                specialText.textContent = `Cooldown: ${remainingSeconds}s`;
+                specialText.className = 'special-cooldown-battle';
+                specialBar.style.width = `${100 - cooldownPercent}%`;
+            }
+        }
+
+        // Game loop
+        function gameLoop() {
+            if (!gameData.battle.gameActive || gameData.battle.isSpawning) return;
+            
+            // Move student based on keys
+            const speed = 5;
+            
+            if (gameData.battle.keysPressed['w'] || gameData.battle.keysPressed['arrowup']) {
+                gameData.battle.studentPosition.y -= speed;
+            }
+            if (gameData.battle.keysPressed['s'] || gameData.battle.keysPressed['arrowdown']) {
+                gameData.battle.studentPosition.y += speed;
+            }
+            if (gameData.battle.keysPressed['a'] || gameData.battle.keysPressed['arrowleft']) {
+                gameData.battle.studentPosition.x -= speed;
+            }
+            if (gameData.battle.keysPressed['d'] || gameData.battle.keysPressed['arrowright']) {
+                gameData.battle.studentPosition.x += speed;
+            }
+            
+            // Also check mobile movement
+            if (gameData.battle.moveDirection) {
+                switch(gameData.battle.moveDirection) {
+                    case 'up': gameData.battle.studentPosition.y -= speed; break;
+                    case 'down': gameData.battle.studentPosition.y += speed; break;
+                    case 'left': gameData.battle.studentPosition.x -= speed; break;
+                    case 'right': gameData.battle.studentPosition.x += speed; break;
+                }
+            }
+            
+            // Keep student in bounds
+            const arena = document.getElementById('battle-arena');
+            if (arena) {
+                const arenaRect = arena.getBoundingClientRect();
+                
+                gameData.battle.studentPosition.x = Math.max(0, 
+                    Math.min(arenaRect.width - 70, gameData.battle.studentPosition.x));
+                gameData.battle.studentPosition.y = Math.max(0, 
+                    Math.min(arenaRect.height - 70, gameData.battle.studentPosition.y));
+            }
+            
+            // AI teacher movement
+            moveTeacherAI();
+            
+            // Update positions
+            updatePositions();
+            
+            // Update projectiles
+            updateProjectiles();
+            
+            // Check collisions
+            checkCollisions();
+        }
+
+        // AI teacher movement
+        function moveTeacherAI() {
+            const speed = 2.5 + (gameData.battle.currentRound * 0.3);
+            const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
+            const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 100) {
+                gameData.battle.teacherPosition.x += (dx / distance) * speed;
+                gameData.battle.teacherPosition.y += (dy / distance) * speed;
+            }
+            
+            // Random attack
+            if (Math.random() < 0.01 && distance < 250) {
+                teacherAttack();
+            }
+        }
+
+        // Update positions
+        function updatePositions() {
+            const studentSquare = document.getElementById('student-square');
+            const teacherSquare = document.getElementById('teacher-square');
+            
+            if (studentSquare) {
+                studentSquare.style.left = gameData.battle.studentPosition.x + 'px';
+                studentSquare.style.top = gameData.battle.studentPosition.y + 'px';
+            }
+            
+            if (teacherSquare) {
+                teacherSquare.style.left = gameData.battle.teacherPosition.x + 'px';
+                teacherSquare.style.top = gameData.battle.teacherPosition.y + 'px';
+            }
+        }
+
+        // Shoot projectile
+        function shootProjectile() {
+            if (!gameData.battle.gameActive || gameData.battle.isSpawning) return;
+            
+            // Calculate direction towards teacher
+            const dx = gameData.battle.teacherPosition.x - gameData.battle.studentPosition.x;
+            const dy = gameData.battle.teacherPosition.y - gameData.battle.studentPosition.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            const velocityX = (dx / distance) * 8;
+            const velocityY = (dy / distance) * 8;
+            
+            createProjectile(
+                gameData.battle.studentPosition.x + 35,
+                gameData.battle.studentPosition.y + 35,
+                velocityX, velocityY, 'student', 10, false
+            );
+        }
+
+        // Special attack with cooldown
+        function specialAttack() {
+            if (!gameData.battle.gameActive || gameData.battle.isSpawning || !gameData.battle.specialAttackReady) return;
+            
+            // Create 5 spread projectiles
+            for (let i = -2; i <= 2; i++) {
+                const angle = i * 0.4;
+                createProjectile(
+                    gameData.battle.studentPosition.x + 35,
+                    gameData.battle.studentPosition.y + 35,
+                    Math.cos(angle) * 10, Math.sin(angle) * 10, 'student', 20, true
+                );
+            }
+            
+            // Start cooldown
+            gameData.battle.specialAttackReady = false;
+            gameData.battle.specialCooldown = gameData.battle.specialMaxCooldown;
+            
+            updateSpecialUI();
+        }
+
+        // Teacher attack
+        function teacherAttack() {
+            const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
+            const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            const velocityX = (dx / distance) * 6;
+            const velocityY = (dy / distance) * 6;
+            
+            createProjectile(
+                gameData.battle.teacherPosition.x + 35,
+                gameData.battle.teacherPosition.y + 35,
+                velocityX, velocityY, 'teacher', 8, false
+            );
+        }
+
+        // Create projectile
+        function createProjectile(x, y, vx, vy, type, damage, isSpecial) {
+            const arena = document.getElementById('battle-arena');
+            const projectile = document.createElement('div');
+            
+            if (isSpecial) {
+                projectile.className = 'projectile special-projectile';
+            } else {
+                projectile.className = `projectile ${type}-projectile`;
+            }
+            
+            projectile.style.left = x + 'px';
+            projectile.style.top = y + 'px';
+            
+            arena.appendChild(projectile);
+            
+            gameData.battle.projectiles.push({
+                element: projectile,
+                x: x,
+                y: y,
+                vx: vx,
+                vy: vy,
+                type: type,
+                damage: damage,
+                isSpecial: isSpecial,
+                active: true
+            });
+        }
+
+        // Update projectiles
+        function updateProjectiles() {
+            const arena = document.getElementById('battle-arena');
+            if (!arena) return;
+            
+            const arenaRect = arena.getBoundingClientRect();
+            
+            for (let i = gameData.battle.projectiles.length - 1; i >= 0; i--) {
+                const proj = gameData.battle.projectiles[i];
+                if (!proj.active) continue;
+                
+                // Update position
+                proj.x += proj.vx;
+                proj.y += proj.vy;
+                
+                proj.element.style.left = proj.x + 'px';
+                proj.element.style.top = proj.y + 'px';
+                
+                // Check collision
+                const targetPos = proj.type === 'student' ? 
+                    gameData.battle.teacherPosition : gameData.battle.studentPosition;
+                
+                const dx = proj.x - (targetPos.x + 35);
+                const dy = proj.y - (targetPos.y + 35);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 35) {
+                    // Hit!
+                    if (proj.type === 'student') {
+                        gameData.battle.teacherHealth -= proj.damage;
+                        gameData.battle.totalScore += proj.damage * 15;
+                    } else {
+                        gameData.battle.studentHealth -= proj.damage;
+                    }
+                    
+                    // Show damage number
+                    showDamageNumber(targetPos.x + 35, targetPos.y + 35, proj.damage);
+                    
+                    // Remove projectile
+                    proj.element.remove();
+                    proj.active = false;
+                    gameData.battle.projectiles.splice(i, 1);
+                    
+                    updateHealthBars();
+                    updateBattleUI();
+                    continue;
+                }
+                
+                // Remove if out of bounds
+                if (proj.x < -50 || proj.x > arenaRect.width + 50 || 
+                    proj.y < -50 || proj.y > arenaRect.height + 50) {
+                    proj.element.remove();
+                    proj.active = false;
+                    gameData.battle.projectiles.splice(i, 1);
+                }
+            }
+        }
+
+        // Show damage number
+        function showDamageNumber(x, y, damage) {
+            const arena = document.getElementById('battle-arena');
+            const damageText = document.createElement('div');
+            damageText.className = 'damage-text';
+            damageText.textContent = `-${damage}`;
+            damageText.style.left = x + 'px';
+            damageText.style.top = y + 'px';
+            
+            arena.appendChild(damageText);
+            
+            // Auto-remove
+            setTimeout(() => {
+                if (damageText.parentNode) {
+                    damageText.parentNode.removeChild(damageText);
+                }
+            }, 1000);
+        }
+
+        // Check collisions
+        function checkCollisions() {
+            const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
+            const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 60) {
+                // Push apart
+                const push = 5;
+                gameData.battle.studentPosition.x += (dx / distance) * push;
+                gameData.battle.studentPosition.y += (dy / distance) * push;
+                gameData.battle.teacherPosition.x -= (dx / distance) * push;
+                gameData.battle.teacherPosition.y -= (dy / distance) * push;
+                
+                // Small damage on collision
+                gameData.battle.studentHealth -= 1;
+                gameData.battle.teacherHealth -= 2;
+                updateHealthBars();
+            }
+        }
+
+        // Teacher defeated
+        function teacherDefeated() {
+            gameData.battle.isSpawning = true;
+            gameData.battle.gameActive = false;
+            gameData.battle.teachersDefeated++;
+            gameData.battle.totalScore += 1000;
+            gameData.battle.currentRound++;
+            
+            // Show spawn screen
+            const spawnScreen = document.getElementById('next-teacher-spawn');
+            spawnScreen.style.display = 'flex';
+            
+            // Clear projectiles
+            gameData.battle.projectiles.forEach(proj => proj.element.remove());
+            gameData.battle.projectiles = [];
+            
+            // Start spawn timer
+            let timer = 3;
+            document.getElementById('spawn-timer').textContent = timer;
+            
+            const countdown = setInterval(() => {
+                timer--;
+                document.getElementById('spawn-timer').textContent = timer;
+                
+                if (timer <= 0) {
+                    clearInterval(countdown);
+                    spawnScreen.style.display = 'none';
+                    
+                    // Spawn new teacher
+                    spawnNextTeacher();
+                }
+            }, 1000);
+        }
+
+        // Spawn next teacher
+        function spawnNextTeacher() {
+            // Select new random teacher
+            selectRandomTeacher();
+            
+            // Reset positions
+            const arena = document.getElementById('battle-arena');
+            const arenaRect = arena.getBoundingClientRect();
+            
+            gameData.battle.studentPosition.x = 50;
+            gameData.battle.studentPosition.y = arenaRect.height / 2 - 35;
+            gameData.battle.teacherPosition.x = arenaRect.width - 120;
+            gameData.battle.teacherPosition.y = arenaRect.height / 2 - 35;
+            
+            // Reset teacher health (increase with rounds)
+            gameData.battle.teacherHealth = 100 + (gameData.battle.currentRound - 1) * 20;
+            
+            // Heal student slightly between rounds
+            gameData.battle.studentHealth = Math.min(100, gameData.battle.studentHealth + 10);
+            
+            // Update teacher square
+            const teacherSquare = document.getElementById('teacher-square');
+            teacherSquare.style.backgroundImage = `url('${gameData.currentTeacher.image}')`;
+            
+            // Update UI
+            document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
+            updatePositions();
+            updateBattleUI();
+            updateHealthBars();
+            
+            // Resume game
+            gameData.battle.isSpawning = false;
+            gameData.battle.gameActive = true;
+        }
+
+        // Mobile controls
+        function moveStudent(direction) {
+            gameData.battle.moveDirection = direction;
+        }
+
+        function stopMoveStudent() {
+            gameData.battle.moveDirection = null;
+        }
+
+        // End battle
+        function endBattle(winner) {
+            gameData.battle.gameActive = false;
+            
+            // Calculate battle time
+            const battleTime = Math.floor((Date.now() - gameData.battle.startTime) / 1000);
+            
+            // Update results
+            document.getElementById('result-title').textContent = 
+                winner === 'student' ? 'VICTORY!' : 'GAME OVER';
+            
+            document.getElementById('winner-text').textContent = 
+                winner === 'student' ? 'Student Wins!' : 'Teacher Wins!';
+            
+            document.getElementById('winner-name').textContent = winner === 'student' ? 
+                gameData.selectedStudent.name : gameData.currentTeacher.name;
+            
+            document.getElementById('teachers-defeated-result').textContent = gameData.battle.teachersDefeated;
+            document.getElementById('total-score').textContent = gameData.battle.totalScore.toLocaleString();
+            document.getElementById('battle-time').textContent = battleTime;
+            document.getElementById('round-result').textContent = gameData.battle.currentRound;
+            
+            // Update summary
+            const summary = winner === 'student' ? 
+                `${gameData.selectedStudent.name} defeated ${gameData.battle.teachersDefeated} teachers in ${battleTime} seconds!` :
+                `${gameData.currentTeacher.name} won in round ${gameData.battle.currentRound}.`;
+            
+            document.getElementById('battle-summary').textContent = summary;
+            
+            // Update high scores if student won and score is high enough
+            if (winner === 'student') {
+                const newScore = {
+                    name: gameData.selectedStudent.name,
+                    score: gameData.battle.totalScore,
+                    teachersDefeated: gameData.battle.teachersDefeated,
+                    round: gameData.battle.currentRound
+                };
+                
+                // Add new score
+                gameData.highScores.push(newScore);
+                
+                // Sort and keep top 5
+                gameData.highScores.sort((a, b) => b.score - a.score);
+                gameData.highScores = gameData.highScores.slice(0, 5);
+                loadHighScores();
+            }
+            
+            // Show results screen
+            showScreen('results-screen');
+        }
+
+        // Rematch
+        function rematch() {
+            showScreen('battle-screen');
+            setTimeout(() => {
+                initializeBattle();
+            }, 100);
+        }
+    </script>
+</body>
+</html>
