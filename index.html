@@ -574,13 +574,9 @@
         }
 
         /* Character Squares - Modern Style */
+        /* Student Square - 25% bigger and no border */
         .character-square {
             position: absolute;
-            width: 70px;
-            height: 70px;
-            border-radius: 16px;
-            background-size: cover;
-            background-position: center;
             transition: transform 0.1s ease;
             z-index: 10;
             box-shadow: 
@@ -589,13 +585,23 @@
         }
 
         .student-square {
-            border: 3px solid #00d4ff;
+            width: 88px; /* 70px + 25% = 87.5px ≈ 88px */
+            height: 88px;
+            border-radius: 16px;
+            background-size: cover;
+            background-position: center;
+            /* Removed border and border-related shadows */
             box-shadow: 
                 0 0 20px rgba(0, 212, 255, 0.6),
                 inset 0 0 20px rgba(0, 212, 255, 0.2);
         }
 
         .teacher-square {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            background-size: cover;
+            background-position: center;
             border: 3px solid #ff6b9d;
             box-shadow: 
                 0 0 20px rgba(255, 107, 157, 0.6),
@@ -918,6 +924,16 @@
                 height: 60px;
             }
             
+            .student-square {
+                width: 75px; /* 60px + 25% = 75px */
+                height: 75px;
+            }
+            
+            .teacher-square {
+                width: 60px;
+                height: 60px;
+            }
+            
             .mobile-controls {
                 display: block;
             }
@@ -967,6 +983,16 @@
             
             .battle-arena {
                 height: 300px;
+            }
+            
+            .student-square {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .teacher-square {
+                width: 48px;
+                height: 48px;
             }
             
             .mobile-controls-grid {
@@ -1512,7 +1538,7 @@
             const arena = document.getElementById('battle-arena');
             arena.innerHTML = '';
             
-            // Create student square
+            // Create student square (25% bigger, no border)
             const studentSquare = document.createElement('div');
             studentSquare.className = 'character-square student-square';
             studentSquare.id = 'student-square';
@@ -1521,7 +1547,7 @@
             studentSquare.style.backgroundImage = `url('${gameData.selectedStudent.image}')`;
             arena.appendChild(studentSquare);
             
-            // Create teacher square
+            // Create teacher square (normal size, with border)
             const teacherSquare = document.createElement('div');
             teacherSquare.className = 'character-square teacher-square';
             teacherSquare.id = 'teacher-square';
@@ -1659,15 +1685,15 @@
                 }
             }
             
-            // Keep student in bounds
+            // Keep student in bounds (88px instead of 70px for 25% bigger)
             const arena = document.getElementById('battle-arena');
             if (arena) {
                 const arenaRect = arena.getBoundingClientRect();
                 
                 gameData.battle.studentPosition.x = Math.max(0, 
-                    Math.min(arenaRect.width - 70, gameData.battle.studentPosition.x));
+                    Math.min(arenaRect.width - 88, gameData.battle.studentPosition.x));
                 gameData.battle.studentPosition.y = Math.max(0, 
-                    Math.min(arenaRect.height - 70, gameData.battle.studentPosition.y));
+                    Math.min(arenaRect.height - 88, gameData.battle.studentPosition.y));
             }
             
             // AI teacher movement
@@ -1679,7 +1705,7 @@
             // Update projectiles
             updateProjectiles();
             
-            // Check collisions
+            // Check collisions (adjust collision detection for larger student)
             checkCollisions();
         }
 
@@ -1721,7 +1747,7 @@
         function shootProjectile() {
             if (!gameData.battle.gameActive || gameData.battle.isSpawning) return;
             
-            // Calculate direction towards teacher
+            // Calculate direction towards teacher (center of larger student)
             const dx = gameData.battle.teacherPosition.x - gameData.battle.studentPosition.x;
             const dy = gameData.battle.teacherPosition.y - gameData.battle.studentPosition.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -1730,8 +1756,8 @@
             const velocityY = (dy / distance) * 8;
             
             createProjectile(
-                gameData.battle.studentPosition.x + 35,
-                gameData.battle.studentPosition.y + 35,
+                gameData.battle.studentPosition.x + 44, // Center of 88px square
+                gameData.battle.studentPosition.y + 44,
                 velocityX, velocityY, 'student', 10, false
             );
         }
@@ -1740,12 +1766,12 @@
         function specialAttack() {
             if (!gameData.battle.gameActive || gameData.battle.isSpawning || !gameData.battle.specialAttackReady) return;
             
-            // Create 5 spread projectiles
+            // Create 5 spread projectiles (from center of larger student)
             for (let i = -2; i <= 2; i++) {
                 const angle = i * 0.4;
                 createProjectile(
-                    gameData.battle.studentPosition.x + 35,
-                    gameData.battle.studentPosition.y + 35,
+                    gameData.battle.studentPosition.x + 44, // Center of 88px square
+                    gameData.battle.studentPosition.y + 44,
                     Math.cos(angle) * 10, Math.sin(angle) * 10, 'student', 20, true
                 );
             }
@@ -1767,7 +1793,7 @@
             const velocityY = (dy / distance) * 6;
             
             createProjectile(
-                gameData.battle.teacherPosition.x + 35,
+                gameData.battle.teacherPosition.x + 35, // Center of 70px square
                 gameData.battle.teacherPosition.y + 35,
                 velocityX, velocityY, 'teacher', 8, false
             );
@@ -1820,15 +1846,18 @@
                 proj.element.style.left = proj.x + 'px';
                 proj.element.style.top = proj.y + 'px';
                 
-                // Check collision
+                // Check collision (adjust for larger student)
                 const targetPos = proj.type === 'student' ? 
                     gameData.battle.teacherPosition : gameData.battle.studentPosition;
                 
-                const dx = proj.x - (targetPos.x + 35);
-                const dy = proj.y - (targetPos.y + 35);
+                // Different hitbox sizes for student (44px radius for 88px square) and teacher (35px radius for 70px square)
+                const targetRadius = proj.type === 'student' ? 35 : 44;
+                
+                const dx = proj.x - (targetPos.x + (proj.type === 'student' ? 35 : 44));
+                const dy = proj.y - (targetPos.y + (proj.type === 'student' ? 35 : 44));
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                if (distance < 35) {
+                if (distance < targetRadius) {
                     // Hit!
                     if (proj.type === 'student') {
                         gameData.battle.teacherHealth -= proj.damage;
@@ -1838,7 +1867,9 @@
                     }
                     
                     // Show damage number
-                    showDamageNumber(targetPos.x + 35, targetPos.y + 35, proj.damage);
+                    showDamageNumber(targetPos.x + (proj.type === 'student' ? 35 : 44), 
+                                   targetPos.y + (proj.type === 'student' ? 35 : 44), 
+                                   proj.damage);
                     
                     // Remove projectile
                     proj.element.remove();
@@ -1879,13 +1910,14 @@
             }, 1000);
         }
 
-        // Check collisions
+        // Check collisions (adjust for larger student)
         function checkCollisions() {
             const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
             const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            if (distance < 60) {
+            // Student is 44px radius, teacher is 35px radius
+            if (distance < 79) { // 44 + 35 = 79
                 // Push apart
                 const push = 5;
                 gameData.battle.studentPosition.x += (dx / distance) * push;
@@ -1944,7 +1976,7 @@
             const arenaRect = arena.getBoundingClientRect();
             
             gameData.battle.studentPosition.x = 50;
-            gameData.battle.studentPosition.y = arenaRect.height / 2 - 35;
+            gameData.battle.studentPosition.y = arenaRect.height / 2 - 44; // Adjusted for 88px height
             gameData.battle.teacherPosition.x = arenaRect.width - 120;
             gameData.battle.teacherPosition.y = arenaRect.height / 2 - 35;
             
