@@ -574,7 +574,6 @@
         }
 
         /* Character Squares - Modern Style */
-        /* Student Square - 25% bigger and no border */
         .character-square {
             position: absolute;
             transition: transform 0.1s ease;
@@ -585,12 +584,11 @@
         }
 
         .student-square {
-            width: 88px; /* 70px + 25% = 87.5px ≈ 88px */
+            width: 88px;
             height: 88px;
             border-radius: 16px;
             background-size: cover;
             background-position: center;
-            /* Removed border and border-related shadows */
             box-shadow: 
                 0 0 20px rgba(0, 212, 255, 0.6),
                 inset 0 0 20px rgba(0, 212, 255, 0.2);
@@ -727,6 +725,109 @@
             background: linear-gradient(90deg, #ffd700, #ffaa00);
             border-radius: 4px;
             transition: width 0.1s linear;
+        }
+
+        /* Teacher Comic Popup */
+        .teacher-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4d 100%);
+            border-radius: 20px;
+            padding: 30px;
+            min-width: 300px;
+            max-width: 90%;
+            z-index: 2000;
+            border: 3px solid #ff6b9d;
+            box-shadow: 
+                0 0 40px rgba(255, 107, 157, 0.8),
+                0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: popupAppear 0.5s forwards;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes popupAppear {
+            0% { 
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% { 
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .teacher-popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .teacher-popup-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            border: 3px solid #ff6b9d;
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.6);
+        }
+
+        .teacher-popup-name {
+            font-size: 1.8rem;
+            color: #ff6b9d;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+        }
+
+        .teacher-popup-message {
+            font-size: 1.4rem;
+            color: #ffffff;
+            background: rgba(255, 107, 157, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px dashed rgba(255, 107, 157, 0.4);
+            margin: 20px 0;
+            font-style: italic;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        .teacher-popup-quote {
+            font-size: 1rem;
+            color: #94a3b8;
+            font-style: italic;
+            margin-top: 15px;
+        }
+
+        .teacher-popup-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #ff6b9d;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .teacher-popup-close:hover {
+            background: rgba(255, 107, 157, 0.2);
+            transform: scale(1.1);
         }
 
         /* Next Teacher Spawn */
@@ -925,13 +1026,32 @@
             }
             
             .student-square {
-                width: 75px; /* 60px + 25% = 75px */
+                width: 75px;
                 height: 75px;
             }
             
             .teacher-square {
                 width: 60px;
                 height: 60px;
+            }
+            
+            .teacher-popup {
+                min-width: 250px;
+                padding: 20px;
+            }
+            
+            .teacher-popup-image {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .teacher-popup-name {
+                font-size: 1.4rem;
+            }
+            
+            .teacher-popup-message {
+                font-size: 1.1rem;
+                padding: 15px;
             }
             
             .mobile-controls {
@@ -995,6 +1115,16 @@
                 height: 48px;
             }
             
+            .teacher-popup {
+                min-width: 200px;
+                padding: 15px;
+            }
+            
+            .teacher-popup-message {
+                font-size: 1rem;
+                padding: 12px;
+            }
+            
             .mobile-controls-grid {
                 padding: 15px;
             }
@@ -1009,6 +1139,24 @@
 <body>
     <!-- CRT Effect (Battle Only) -->
     <div class="crt-effect"></div>
+    
+    <!-- Teacher Comic Popup -->
+    <div id="teacher-popup" class="teacher-popup" style="display: none;">
+        <button class="teacher-popup-close" onclick="closeTeacherPopup()">×</button>
+        <div class="teacher-popup-header">
+            <img id="popup-teacher-image" class="teacher-popup-image" src="" alt="">
+            <div>
+                <div id="popup-teacher-name" class="teacher-popup-name">TEACHER</div>
+                <div class="teacher-popup-quote">New Challenger Approaches!</div>
+            </div>
+        </div>
+        <div id="popup-teacher-message" class="teacher-popup-message">
+            Loading message...
+        </div>
+        <div style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+            (Click anywhere or press any key to continue)
+        </div>
+    </div>
     
     <!-- Home Screen -->
     <div id="home-screen" class="screen active">
@@ -1271,7 +1419,7 @@
     </div>
 
     <script>
-        // Game Data with Modern Updates
+        // Game Data with Teacher Messages
         const gameData = {
             students: [
                 { id: 1, name: "ANIK", image: "https://i.postimg.cc/TPB0TWRV/Anik-Avatar.png", health: 100 },
@@ -1285,11 +1433,46 @@
             ],
             
             teachers: [
-                { id: 1, name: "MODI", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025060327-r6rcu4tcow2792mxfyhpiqsdvhwx3404m54ulstj68.jpg", health: 100 },
-                { id: 2, name: "SREELEKHA", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025010794-qzna93shqidolax0h8t6k8jrq043flyqiykdecc4nq.jpg", health: 100 },
-                { id: 3, name: "RN", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111148-e1731362737713-qwx4nhtuky0i39z196vfw50rfg38jumphujxu7akqg.jpg", health: 100 },
-                { id: 4, name: "ANUJ", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111430-qx1c1ll9iusns9e4h1118too8d7vcf61hd0bzydat2.jpg", health: 100 },
-                { id: 5, name: "PUNIT", image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111466-qx1c1uznf75j0d0gy53axrba67xjhe7cunj6spzd2u.jpg", health: 100 }
+                { 
+                    id: 1, 
+                    name: "MODI", 
+                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025060327-r6rcu4tcow2792mxfyhpiqsdvhwx3404m54ulstj68.jpg", 
+                    health: 100,
+                    message: "Most IMP. Modi hai toh mumkin hai!",
+                    quote: "The Prime Teacher"
+                },
+                { 
+                    id: 2, 
+                    name: "SREELEKHA", 
+                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025010794-qzna93shqidolax0h8t6k8jrq043flyqiykdecc4nq.jpg", 
+                    health: 100,
+                    message: "Hey you! Stand up!",
+                    quote: "The Disciplinarian"
+                },
+                { 
+                    id: 3, 
+                    name: "RN", 
+                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111148-e1731362737713-qwx4nhtuky0i39z196vfw50rfg38jumphujxu7akqg.jpg", 
+                    health: 100,
+                    message: "Beta tumhare parents bulaayenge!",
+                    quote: "The Principal"
+                },
+                { 
+                    id: 4, 
+                    name: "ANUJ", 
+                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111430-qx1c1ll9iusns9e4h1118too8d7vcf61hd0bzydat2.jpg", 
+                    health: 100,
+                    message: "Beta masti mat karo RN sir ko bol dunga!",
+                    quote: "The Monitor"
+                },
+                { 
+                    id: 5, 
+                    name: "PUNIT", 
+                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111466-qx1c1uznf75j0d0gy53axrba67xjhe7cunj6spzd2u.jpg", 
+                    health: 100,
+                    message: "It's a hap-hap-happy b'day!",
+                    quote: "The Fun Teacher"
+                }
             ],
             
             highScores: [
@@ -1320,7 +1503,8 @@
                 specialAttackReady: true,
                 specialCooldown: 0,
                 specialMaxCooldown: 5000,
-                specialCooldownInterval: null
+                specialCooldownInterval: null,
+                showPopup: false
             }
         };
 
@@ -1333,6 +1517,20 @@
             // Set up keyboard controls
             document.addEventListener('keydown', handleKeyDown);
             document.addEventListener('keyup', handleKeyUp);
+            
+            // Set up popup click to close
+            document.addEventListener('click', function(e) {
+                if (gameData.battle.showPopup && !e.target.closest('.teacher-popup')) {
+                    closeTeacherPopup();
+                }
+            });
+            
+            // Set up popup key to close
+            document.addEventListener('keydown', function(e) {
+                if (gameData.battle.showPopup) {
+                    closeTeacherPopup();
+                }
+            });
             
             // Game loop
             setInterval(gameLoop, 1000/60);
@@ -1501,7 +1699,8 @@
                 specialAttackReady: true,
                 specialCooldown: 0,
                 specialMaxCooldown: 5000,
-                specialCooldownInterval: null
+                specialCooldownInterval: null,
+                showPopup: false
             };
             
             // Set student
@@ -1519,6 +1718,11 @@
             // Update UI
             updateBattleUI();
             updateHealthBars();
+            
+            // Show teacher popup for first teacher
+            setTimeout(() => {
+                showTeacherPopup();
+            }, 500);
         }
 
         // Select random teacher
@@ -1538,7 +1742,7 @@
             const arena = document.getElementById('battle-arena');
             arena.innerHTML = '';
             
-            // Create student square (25% bigger, no border)
+            // Create student square
             const studentSquare = document.createElement('div');
             studentSquare.className = 'character-square student-square';
             studentSquare.id = 'student-square';
@@ -1547,7 +1751,7 @@
             studentSquare.style.backgroundImage = `url('${gameData.selectedStudent.image}')`;
             arena.appendChild(studentSquare);
             
-            // Create teacher square (normal size, with border)
+            // Create teacher square
             const teacherSquare = document.createElement('div');
             teacherSquare.className = 'character-square teacher-square';
             teacherSquare.id = 'teacher-square';
@@ -1555,6 +1759,43 @@
             teacherSquare.style.top = gameData.battle.teacherPosition.y + 'px';
             teacherSquare.style.backgroundImage = `url('${gameData.currentTeacher.image}')`;
             arena.appendChild(teacherSquare);
+        }
+
+        // Show teacher comic popup
+        function showTeacherPopup() {
+            if (!gameData.currentTeacher) return;
+            
+            gameData.battle.showPopup = true;
+            gameData.battle.gameActive = false;
+            
+            const popup = document.getElementById('teacher-popup');
+            const teacher = gameData.currentTeacher;
+            
+            // Set popup content
+            document.getElementById('popup-teacher-image').src = teacher.image;
+            document.getElementById('popup-teacher-image').alt = teacher.name;
+            document.getElementById('popup-teacher-name').textContent = teacher.name;
+            document.getElementById('popup-teacher-message').textContent = teacher.message;
+            
+            // Show popup
+            popup.style.display = 'block';
+            
+            // Auto-close after 5 seconds
+            setTimeout(() => {
+                if (gameData.battle.showPopup) {
+                    closeTeacherPopup();
+                }
+            }, 5000);
+        }
+
+        // Close teacher popup
+        function closeTeacherPopup() {
+            const popup = document.getElementById('teacher-popup');
+            popup.style.display = 'none';
+            gameData.battle.showPopup = false;
+            
+            // Resume game
+            gameData.battle.gameActive = true;
         }
 
         // Update battle UI
@@ -1587,6 +1828,7 @@
 
         // Handle keyboard input
         function handleKeyDown(event) {
+            if (gameData.battle.showPopup) return;
             if (!gameData.battle.gameActive) return;
             
             const key = event.key.toLowerCase();
@@ -1617,7 +1859,7 @@
 
         // Update special cooldown
         function updateSpecialCooldown() {
-            if (!gameData.battle.gameActive) return;
+            if (!gameData.battle.gameActive || gameData.battle.showPopup) return;
             
             if (!gameData.battle.specialAttackReady) {
                 gameData.battle.specialCooldown -= 100;
@@ -1657,7 +1899,7 @@
 
         // Game loop
         function gameLoop() {
-            if (!gameData.battle.gameActive || gameData.battle.isSpawning) return;
+            if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
             
             // Move student based on keys
             const speed = 5;
@@ -1685,7 +1927,7 @@
                 }
             }
             
-            // Keep student in bounds (88px instead of 70px for 25% bigger)
+            // Keep student in bounds
             const arena = document.getElementById('battle-arena');
             if (arena) {
                 const arenaRect = arena.getBoundingClientRect();
@@ -1705,7 +1947,7 @@
             // Update projectiles
             updateProjectiles();
             
-            // Check collisions (adjust collision detection for larger student)
+            // Check collisions
             checkCollisions();
         }
 
@@ -1745,9 +1987,9 @@
 
         // Shoot projectile
         function shootProjectile() {
-            if (!gameData.battle.gameActive || gameData.battle.isSpawning) return;
+            if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
             
-            // Calculate direction towards teacher (center of larger student)
+            // Calculate direction towards teacher
             const dx = gameData.battle.teacherPosition.x - gameData.battle.studentPosition.x;
             const dy = gameData.battle.teacherPosition.y - gameData.battle.studentPosition.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -1764,9 +2006,9 @@
 
         // Special attack with cooldown
         function specialAttack() {
-            if (!gameData.battle.gameActive || gameData.battle.isSpawning || !gameData.battle.specialAttackReady) return;
+            if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || !gameData.battle.specialAttackReady) return;
             
-            // Create 5 spread projectiles (from center of larger student)
+            // Create 5 spread projectiles
             for (let i = -2; i <= 2; i++) {
                 const angle = i * 0.4;
                 createProjectile(
@@ -1785,6 +2027,8 @@
 
         // Teacher attack
         function teacherAttack() {
+            if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
+            
             const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
             const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -1846,11 +2090,10 @@
                 proj.element.style.left = proj.x + 'px';
                 proj.element.style.top = proj.y + 'px';
                 
-                // Check collision (adjust for larger student)
+                // Check collision
                 const targetPos = proj.type === 'student' ? 
                     gameData.battle.teacherPosition : gameData.battle.studentPosition;
                 
-                // Different hitbox sizes for student (44px radius for 88px square) and teacher (35px radius for 70px square)
                 const targetRadius = proj.type === 'student' ? 35 : 44;
                 
                 const dx = proj.x - (targetPos.x + (proj.type === 'student' ? 35 : 44));
@@ -1910,7 +2153,7 @@
             }, 1000);
         }
 
-        // Check collisions (adjust for larger student)
+        // Check collisions
         function checkCollisions() {
             const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
             const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
@@ -1976,7 +2219,7 @@
             const arenaRect = arena.getBoundingClientRect();
             
             gameData.battle.studentPosition.x = 50;
-            gameData.battle.studentPosition.y = arenaRect.height / 2 - 44; // Adjusted for 88px height
+            gameData.battle.studentPosition.y = arenaRect.height / 2 - 44;
             gameData.battle.teacherPosition.x = arenaRect.width - 120;
             gameData.battle.teacherPosition.y = arenaRect.height / 2 - 35;
             
@@ -1999,10 +2242,16 @@
             // Resume game
             gameData.battle.isSpawning = false;
             gameData.battle.gameActive = true;
+            
+            // Show teacher popup for new teacher
+            setTimeout(() => {
+                showTeacherPopup();
+            }, 300);
         }
 
         // Mobile controls
         function moveStudent(direction) {
+            if (gameData.battle.showPopup) return;
             gameData.battle.moveDirection = direction;
         }
 
