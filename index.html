@@ -830,6 +830,144 @@
             transform: scale(1.1);
         }
 
+        /* Teacher Special Attack Effects */
+        .special-attack-effect {
+            position: absolute;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .demonetization-effect {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #000000, #800000);
+            opacity: 0.7;
+            animation: demonetizePulse 2s infinite;
+        }
+
+        @keyframes demonetizePulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0.3; }
+        }
+
+        .parent-ghost {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: ghostFloat 3s linear infinite;
+            filter: blur(2px);
+        }
+
+        @keyframes ghostFloat {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            50% { transform: translateY(-20px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 0.8; }
+        }
+
+        .attendance-freeze {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 100, 255, 0.3);
+            backdrop-filter: blur(5px);
+            animation: freezePulse 1s infinite;
+        }
+
+        @keyframes freezePulse {
+            0% { backdrop-filter: blur(5px); }
+            50% { backdrop-filter: blur(10px); }
+            100% { backdrop-filter: blur(5px); }
+        }
+
+        .surprise-test-effect {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ff0000;
+            border-radius: 50%;
+            animation: testFlash 0.5s infinite;
+        }
+
+        @keyframes testFlash {
+            0% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+            100% { opacity: 0.3; transform: scale(1); }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall 3s linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(500px) rotate(360deg); opacity: 0; }
+        }
+
+        .special-attack-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff6b9d, #ff00cc);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            z-index: 1500;
+            box-shadow: 0 0 30px rgba(255, 107, 157, 0.8);
+            animation: notificationPulse 0.5s ease-in-out 3;
+        }
+
+        @keyframes notificationPulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Sound Controls */
+        .sound-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .sound-btn {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .sound-btn:hover {
+            background: rgba(0, 212, 255, 0.3);
+            transform: scale(1.1);
+        }
+
         /* Next Teacher Spawn */
         .next-teacher-spawn {
             position: fixed;
@@ -1081,6 +1219,11 @@
                 width: 100%;
                 max-width: 300px;
             }
+            
+            .sound-controls {
+                bottom: 100px;
+                right: 15px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1156,6 +1299,12 @@
         <div style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
             (Click anywhere or press any key to continue)
         </div>
+    </div>
+    
+    <!-- Sound Controls -->
+    <div class="sound-controls">
+        <button class="sound-btn" onclick="toggleSound()" id="sound-btn">🔊</button>
+        <button class="sound-btn" onclick="toggleMusic()" id="music-btn">🎵</button>
     </div>
     
     <!-- Home Screen -->
@@ -1419,904 +1568,1397 @@
     </div>
 
     <script>
-        // Game Data with Teacher Messages
-        const gameData = {
-            students: [
-                { id: 1, name: "ANIK", image: "https://i.postimg.cc/TPB0TWRV/Anik-Avatar.png", health: 100 },
-                { id: 2, name: "MAYANK", image: "https://i.postimg.cc/Gt5RJV82/Mayankesh-Avatar.png", health: 100 },
-                { id: 3, name: "PARTH", image: "https://i.postimg.cc/s2bm3ZVn/Parth-Avatar.png", health: 100 },
-                { id: 4, name: "PRANSHU", image: "https://i.postimg.cc/CK97wfFP/Pranshu-Avatar.png", health: 100 },
-                { id: 5, name: "RUDRA", image: "https://i.postimg.cc/7Lj9qTxt/Rudra-Avatar.png", health: 100 },
-                { id: 6, name: "SARTHAK", image: "https://i.postimg.cc/V6MRvL6g/Sarthak-Avatar.png", health: 100 },
-                { id: 7, name: "TAMMO", image: "https://i.postimg.cc/1t6HX5tJ/Tammo-Avatar.png", health: 100 },
-                { id: 8, name: "HARSHEEL", image: "https://i.postimg.cc/nc6hYFcW/Harsheel-Avatar.png", health: 100 }
-            ],
-            
-            teachers: [
-                { 
-                    id: 1, 
-                    name: "MODI", 
-                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025060327-r6rcu4tcow2792mxfyhpiqsdvhwx3404m54ulstj68.jpg", 
-                    health: 100,
-                    message: "Most IMP. Modi hai toh mumkin hai!",
-                    quote: "The Prime Teacher"
-                },
-                { 
-                    id: 2, 
-                    name: "SREELEKHA", 
-                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025010794-qzna93shqidolax0h8t6k8jrq043flyqiykdecc4nq.jpg", 
-                    health: 100,
-                    message: "Hey you! Stand up!",
-                    quote: "The Disciplinarian"
-                },
-                { 
-                    id: 3, 
-                    name: "RN", 
-                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111148-e1731362737713-qwx4nhtuky0i39z196vfw50rfg38jumphujxu7akqg.jpg", 
-                    health: 100,
-                    message: "Beta tumhare parents bulaayenge!",
-                    quote: "The Principal"
-                },
-                { 
-                    id: 4, 
-                    name: "ANUJ", 
-                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111430-qx1c1ll9iusns9e4h1118too8d7vcf61hd0bzydat2.jpg", 
-                    health: 100,
-                    message: "Beta masti mat karo RN sir ko bol dunga!",
-                    quote: "The Monitor"
-                },
-                { 
-                    id: 5, 
-                    name: "PUNIT", 
-                    image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111466-qx1c1uznf75j0d0gy53axrba67xjhe7cunj6spzd2u.jpg", 
-                    health: 100,
-                    message: "It's a hap-hap-happy b'day!",
-                    quote: "The Fun Teacher"
-                }
-            ],
-            
-            highScores: [
-                { name: "ANIK", score: 18500, teachersDefeated: 15, round: 16 },
-                { name: "PARTH", score: 14200, teachersDefeated: 12, round: 13 },
-                { name: "HARSHEEL", score: 12500, teachersDefeated: 11, round: 12 },
-                { name: "SARTHAK", score: 9500, teachersDefeated: 8, round: 9 },
-                { name: "TAMMO", score: 7200, teachersDefeated: 6, round: 7 }
-            ],
-            
-            selectedStudent: null,
-            currentTeacher: null,
-            
-            battle: {
-                studentHealth: 100,
-                teacherHealth: 100,
-                gameActive: false,
-                startTime: null,
-                totalScore: 0,
-                teachersDefeated: 0,
-                currentRound: 1,
-                studentPosition: { x: 50, y: 150 },
-                teacherPosition: { x: 300, y: 150 },
-                keysPressed: {},
-                projectiles: [],
-                isSpawning: false,
-                moveDirection: null,
-                specialAttackReady: true,
-                specialCooldown: 0,
-                specialMaxCooldown: 5000,
-                specialCooldownInterval: null,
-                showPopup: false
+    // Game Data with Teacher Messages and Special Attacks
+    const gameData = {
+        students: [
+            { id: 1, name: "ANIK", image: "https://i.postimg.cc/TPB0TWRV/Anik-Avatar.png", health: 100 },
+            { id: 2, name: "MAYANK", image: "https://i.postimg.cc/Gt5RJV82/Mayankesh-Avatar.png", health: 100 },
+            { id: 3, name: "PARTH", image: "https://i.postimg.cc/s2bm3ZVn/Parth-Avatar.png", health: 100 },
+            { id: 4, name: "PRANSHU", image: "https://i.postimg.cc/CK97wfFP/Pranshu-Avatar.png", health: 100 },
+            { id: 5, name: "RUDRA", image: "https://i.postimg.cc/7Lj9qTxt/Rudra-Avatar.png", health: 100 },
+            { id: 6, name: "SARTHAK", image: "https://i.postimg.cc/V6MRvL6g/Sarthak-Avatar.png", health: 100 },
+            { id: 7, name: "TAMMO", image: "https://i.postimg.cc/1t6HX5tJ/Tammo-Avatar.png", health: 100 },
+            { id: 8, name: "HARSHEEL", image: "https://i.postimg.cc/nc6hYFcW/Harsheel-Avatar.png", health: 100 }
+        ],
+        
+        teachers: [
+            { 
+                id: 1, 
+                name: "MODI", 
+                image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025060327-r6rcu4tcow2792mxfyhpiqsdvhwx3404m54ulstj68.jpg", 
+                health: 100,
+                message: "Most IMP. Modi hai toh mumkin hai!",
+                quote: "The Prime Teacher",
+                specialAttack: "demonetization",
+                specialCooldown: 15000,
+                lastSpecial: 0
+            },
+            { 
+                id: 2, 
+                name: "SREELEKHA", 
+                image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2025010794-qzna93shqidolax0h8t6k8jrq043flyqiykdecc4nq.jpg", 
+                health: 100,
+                message: "Hey you! Stand up!",
+                quote: "The Disciplinarian",
+                specialAttack: "attendance",
+                specialCooldown: 12000,
+                lastSpecial: 0
+            },
+            { 
+                id: 3, 
+                name: "RN", 
+                image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111148-e1731362737713-qwx4nhtuky0i39z196vfw50rfg38jumphujxu7akqg.jpg", 
+                health: 100,
+                message: "Beta tumhare parents bulaayenge!",
+                quote: "The Principal",
+                specialAttack: "parentMeeting",
+                specialCooldown: 20000,
+                lastSpecial: 0
+            },
+            { 
+                id: 4, 
+                name: "ANUJ", 
+                image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111430-qx1c1ll9iusns9e4h1118too8d7vcf61hd0bzydat2.jpg", 
+                health: 100,
+                message: "Beta masti mat karo RN sir ko bol dunga!",
+                quote: "The Monitor",
+                specialAttack: "surpriseTest",
+                specialCooldown: 10000,
+                lastSpecial: 0
+            },
+            { 
+                id: 5, 
+                name: "PUNIT", 
+                image: "https://cdnbbsr.s3waas.gov.in/s3kv02013b3a11c006ef10c7a42ff6a61d/uploads/bfi_thumb/2024111466-qx1c1uznf75j0d0gy53axrba67xjhe7cunj6spzd2u.jpg", 
+                health: 100,
+                message: "It's a hap-hap-happy b'day!",
+                quote: "The Fun Teacher",
+                specialAttack: "birthdayParty",
+                specialCooldown: 18000,
+                lastSpecial: 0
             }
-        };
+        ],
+        
+        highScores: [
+            { name: "ANIK", score: 18500, teachersDefeated: 15, round: 16 },
+            { name: "PARTH", score: 14200, teachersDefeated: 12, round: 13 },
+            { name: "HARSHEEL", score: 12500, teachersDefeated: 11, round: 12 },
+            { name: "SARTHAK", score: 9500, teachersDefeated: 8, round: 9 },
+            { name: "TAMMO", score: 7200, teachersDefeated: 6, round: 7 }
+        ],
+        
+        selectedStudent: null,
+        currentTeacher: null,
+        
+        // Sound system
+        sounds: {
+            enabled: true,
+            musicEnabled: true,
+            audioContext: null
+        },
+        
+        battle: {
+            studentHealth: 100,
+            teacherHealth: 100,
+            gameActive: false,
+            startTime: null,
+            totalScore: 0,
+            teachersDefeated: 0,
+            currentRound: 1,
+            studentPosition: { x: 50, y: 150 },
+            teacherPosition: { x: 300, y: 150 },
+            keysPressed: {},
+            projectiles: [],
+            isSpawning: false,
+            moveDirection: null,
+            specialAttackReady: true,
+            specialCooldown: 0,
+            specialMaxCooldown: 5000,
+            specialCooldownInterval: null,
+            showPopup: false,
+            activeEffects: [],
+            teacherSpecialReady: true
+        }
+    };
 
-        // Initialize game
-        document.addEventListener('DOMContentLoaded', function() {
-            loadStudents();
-            loadTeachers();
-            loadHighScores();
-            
-            // Set up keyboard controls
-            document.addEventListener('keydown', handleKeyDown);
-            document.addEventListener('keyup', handleKeyUp);
-            
-            // Set up popup click to close
-            document.addEventListener('click', function(e) {
-                if (gameData.battle.showPopup && !e.target.closest('.teacher-popup')) {
-                    closeTeacherPopup();
-                }
-            });
-            
-            // Set up popup key to close
-            document.addEventListener('keydown', function(e) {
-                if (gameData.battle.showPopup) {
-                    closeTeacherPopup();
-                }
-            });
-            
-            // Game loop
-            setInterval(gameLoop, 1000/60);
-            
-            // Update special cooldown
-            setInterval(updateSpecialCooldown, 100);
+    // Sound system using Web Audio API
+    const soundEffects = {
+        // Cringe sounds (synthesized)
+        cringeLaugh: { type: 'tone', frequency: [800, 600, 400], duration: 0.8, volume: 0.3 },
+        awkwardCough: { type: 'noise', duration: 0.5, volume: 0.3 },
+        ahemSound: { type: 'tone', frequency: 400, duration: 0.3, volume: 0.3 },
+        bellRing: { type: 'tone', frequency: 800, duration: 0.5, volume: 0.4 },
+        oops: { type: 'tone', frequency: [600, 400], duration: 0.4, volume: 0.3 },
+        
+        // Game sounds
+        shoot: { type: 'tone', frequency: 300, duration: 0.1, volume: 0.2 },
+        hit: { type: 'noise', duration: 0.2, volume: 0.3 },
+        special: { type: 'tone', frequency: [800, 1200, 800], duration: 0.5, volume: 0.4 },
+        heal: { type: 'tone', frequency: [600, 800, 1000], duration: 0.3, volume: 0.3 },
+        damage: { type: 'noise', duration: 0.3, volume: 0.4 },
+        
+        // Teacher special attack sounds
+        demonetization: { type: 'tone', frequency: [200, 100, 50], duration: 1, volume: 0.4 },
+        parentMeeting: { type: 'noise', duration: 1, volume: 0.3 },
+        attendance: { type: 'tone', frequency: 500, duration: 0.5, volume: 0.3 },
+        surpriseTest: { type: 'tone', frequency: [1000, 800, 600], duration: 0.5, volume: 0.4 },
+        birthdayParty: { type: 'tone', frequency: [600, 800, 600, 800], duration: 1, volume: 0.4 },
+        
+        // Funny sounds
+        tiktokDing: { type: 'tone', frequency: 1200, duration: 0.1, volume: 0.3 },
+        memeBoom: { type: 'noise', duration: 0.5, volume: 0.5 },
+        vineBoom: { type: 'noise', duration: 0.3, volume: 0.4 },
+        bruhSound: { type: 'tone', frequency: [200, 150], duration: 0.3, volume: 0.3 },
+        sheesh: { type: 'tone', frequency: [800, 1000, 800], duration: 0.2, volume: 0.3 }
+    };
+
+    // Initialize game
+    document.addEventListener('DOMContentLoaded', function() {
+        loadStudents();
+        loadTeachers();
+        loadHighScores();
+        
+        // Initialize audio context
+        initAudio();
+        
+        // Set up keyboard controls
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyUp);
+        
+        // Set up popup click to close
+        document.addEventListener('click', function(e) {
+            if (gameData.battle.showPopup && !e.target.closest('.teacher-popup')) {
+                closeTeacherPopup();
+            }
         });
-
-        // Toggle controls menu
-        function toggleControls() {
-            const content = document.getElementById('controls-content');
-            const arrow = document.getElementById('controls-arrow');
-            
-            content.classList.toggle('expanded');
-            arrow.textContent = content.classList.contains('expanded') ? '▲' : '▼';
-        }
-
-        // Load students
-        function loadStudents() {
-            const container = document.getElementById('student-characters');
-            container.innerHTML = '';
-            
-            gameData.students.forEach(student => {
-                const card = document.createElement('div');
-                card.className = 'character-card';
-                card.onclick = () => selectStudent(student);
-                
-                // Create image with error handling
-                const img = document.createElement('img');
-                img.className = 'character-img';
-                img.src = student.image;
-                img.alt = student.name;
-                img.onerror = function() {
-                    this.src = `https://ui-avatars.com/api/?name=${student.name}&background=0ea5e9&color=fff&size=80`;
-                };
-                
-                const nameDiv = document.createElement('div');
-                nameDiv.className = 'character-name';
-                nameDiv.textContent = student.name;
-                
-                card.appendChild(img);
-                card.appendChild(nameDiv);
-                
-                container.appendChild(card);
-            });
-        }
-
-        // Load teachers
-        function loadTeachers() {
-            const container = document.getElementById('teacher-characters');
-            container.innerHTML = '';
-            
-            gameData.teachers.forEach(teacher => {
-                const card = document.createElement('div');
-                card.className = 'character-card';
-                
-                const img = document.createElement('img');
-                img.className = 'character-img';
-                img.src = teacher.image;
-                img.alt = teacher.name;
-                img.onerror = function() {
-                    this.src = `https://ui-avatars.com/api/?name=${teacher.name}&background=ec4899&color=fff&size=80`;
-                };
-                
-                const nameDiv = document.createElement('div');
-                nameDiv.className = 'character-name';
-                nameDiv.textContent = teacher.name;
-                
-                card.appendChild(img);
-                card.appendChild(nameDiv);
-                
-                container.appendChild(card);
-            });
-        }
-
-        // Load high scores
-        function loadHighScores() {
-            const container = document.getElementById('highscore-list');
-            container.innerHTML = '';
-            
-            gameData.highScores.forEach((score, index) => {
-                const item = document.createElement('li');
-                item.className = 'highscore-item';
-                
-                item.innerHTML = `
-                    <div class="score-rank">${index + 1}</div>
-                    <div style="flex-grow: 1;">
-                        <div style="font-weight: 600; color: #00d4ff; font-size: 1rem;">${score.name}</div>
-                        <div style="font-size: 0.8rem; color: #94a3b8;">Round ${score.round} • ${score.teachersDefeated} teachers</div>
-                    </div>
-                    <div style="font-weight: 700; color: #ffd700; font-size: 1.1rem;">${score.score.toLocaleString()}</div>
-                `;
-                
-                container.appendChild(item);
-            });
-        }
-
-        // Select student
-        function selectStudent(student) {
-            gameData.selectedStudent = student;
-            
-            // Update UI
-            document.querySelectorAll('#student-characters .character-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            event.currentTarget.classList.add('selected');
-            
-            // Update selected display
-            document.getElementById('selected-text').innerHTML = `
-                <span style="color: #00d4ff;">${student.name}</span>
-                <span style="display: block; font-size: 0.9rem; color: #94a3b8; margin-top: 5px;">Ready for battle</span>
-            `;
-        }
-
-        // Switch screens
-        function showScreen(screenId) {
-            // Hide all screens
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            
-            // Show requested screen
-            document.getElementById(screenId).classList.add('active');
-            
-            // Initialize battle if going to battle screen
-            if (screenId === 'battle-screen') {
-                if (gameData.selectedStudent) {
-                    initializeBattle();
-                } else {
-                    alert('Please select a student first!');
-                    showScreen('dashboard-screen');
-                }
+        
+        // Set up popup key to close
+        document.addEventListener('keydown', function(e) {
+            if (gameData.battle.showPopup) {
+                closeTeacherPopup();
             }
-            
-            // Reset keys
-            gameData.battle.keysPressed = {};
-        }
+        });
+        
+        // Game loop
+        setInterval(gameLoop, 1000/60);
+        
+        // Update special cooldown
+        setInterval(updateSpecialCooldown, 100);
+        
+        // Update teacher special cooldown
+        setInterval(updateTeacherSpecial, 100);
+        
+        // Random cringe sounds during gameplay
+        setInterval(playRandomCringeSound, 8000);
+    });
 
-        // Start battle
-        function startBattle() {
-            if (!gameData.selectedStudent) {
-                alert('Please select a student first!');
-                return;
+    // Initialize audio
+    function initAudio() {
+        try {
+            gameData.sounds.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            console.log("Audio initialized successfully");
+        } catch (e) {
+            console.log("Web Audio API not supported");
+            gameData.sounds.enabled = false;
+        }
+    }
+
+    // Play synthesized sound
+    function playSound(soundName, customVolume = null) {
+        if (!gameData.sounds.enabled || !gameData.sounds.audioContext) return;
+        
+        const sound = soundEffects[soundName];
+        if (!sound) return;
+        
+        try {
+            const volume = customVolume !== null ? customVolume : sound.volume;
+            
+            if (sound.type === 'tone') {
+                playTone(sound, volume);
+            } else if (sound.type === 'noise') {
+                playNoise(sound, volume);
             }
-            
-            showScreen('battle-screen');
+        } catch (e) {
+            console.log("Sound error:", e);
         }
+    }
 
-        // Initialize battle
-        function initializeBattle() {
-            // Reset battle state
-            gameData.battle = {
-                studentHealth: 100,
-                teacherHealth: 100,
-                gameActive: true,
-                startTime: Date.now(),
-                totalScore: 0,
-                teachersDefeated: 0,
-                currentRound: 1,
-                studentPosition: { x: 50, y: 150 },
-                teacherPosition: { x: 300, y: 150 },
-                keysPressed: {},
-                projectiles: [],
-                isSpawning: false,
-                moveDirection: null,
-                specialAttackReady: true,
-                specialCooldown: 0,
-                specialMaxCooldown: 5000,
-                specialCooldownInterval: null,
-                showPopup: false
+    // Play a tone
+    function playTone(sound, volume) {
+        const audioContext = gameData.sounds.audioContext;
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Set oscillator type
+        oscillator.type = 'sine';
+        
+        // Handle frequency array (for arpeggios) or single frequency
+        if (Array.isArray(sound.frequency)) {
+            const now = audioContext.currentTime;
+            let currentTime = now;
+            
+            // Set initial frequency
+            oscillator.frequency.setValueAtTime(sound.frequency[0], now);
+            
+            // Create frequency changes
+            const segmentDuration = sound.duration / sound.frequency.length;
+            
+            for (let i = 1; i < sound.frequency.length; i++) {
+                currentTime += segmentDuration;
+                oscillator.frequency.exponentialRampToValueAtTime(sound.frequency[i], currentTime);
+            }
+        } else {
+            oscillator.frequency.value = sound.frequency || 440;
+        }
+        
+        // Set volume envelope
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + sound.duration);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + sound.duration);
+    }
+
+    // Play noise (explosion/hit sounds)
+    function playNoise(sound, volume) {
+        const audioContext = gameData.sounds.audioContext;
+        const bufferSize = audioContext.sampleRate * sound.duration;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const output = buffer.getChannelData(0);
+        
+        // Fill buffer with noise
+        for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
+        }
+        
+        const noiseSource = audioContext.createBufferSource();
+        const gainNode = audioContext.createGain();
+        
+        noiseSource.buffer = buffer;
+        noiseSource.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Set volume envelope
+        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + sound.duration);
+        
+        noiseSource.start();
+        noiseSource.stop(audioContext.currentTime + sound.duration);
+    }
+
+    // Play random cringe sound
+    function playRandomCringeSound() {
+        if (!gameData.battle.gameActive || gameData.battle.showPopup || gameData.battle.isSpawning) return;
+        
+        const cringeSounds = ['awkwardCough', 'ahemSound', 'cringeLaugh', 'bruhSound'];
+        const randomSound = cringeSounds[Math.floor(Math.random() * cringeSounds.length)];
+        
+        if (Math.random() < 0.3) { // 30% chance
+            playSound(randomSound);
+        }
+    }
+
+    // Toggle sound
+    function toggleSound() {
+        gameData.sounds.enabled = !gameData.sounds.enabled;
+        document.getElementById('sound-btn').textContent = gameData.sounds.enabled ? '🔊' : '🔇';
+        
+        if (gameData.sounds.enabled) {
+            playSound('tiktokDing');
+        }
+    }
+
+    // Toggle music
+    function toggleMusic() {
+        gameData.sounds.musicEnabled = !gameData.sounds.musicEnabled;
+        document.getElementById('music-btn').textContent = gameData.sounds.musicEnabled ? '🎵' : '🔇';
+        playSound('sheesh');
+    }
+
+    // Toggle controls menu
+    function toggleControls() {
+        const content = document.getElementById('controls-content');
+        const arrow = document.getElementById('controls-arrow');
+        
+        content.classList.toggle('expanded');
+        arrow.textContent = content.classList.contains('expanded') ? '▲' : '▼';
+        
+        playSound('tiktokDing');
+    }
+
+    // Load students
+    function loadStudents() {
+        const container = document.getElementById('student-characters');
+        container.innerHTML = '';
+        
+        gameData.students.forEach(student => {
+            const card = document.createElement('div');
+            card.className = 'character-card';
+            card.onclick = () => selectStudent(student);
+            
+            // Create image with error handling
+            const img = document.createElement('img');
+            img.className = 'character-img';
+            img.src = student.image;
+            img.alt = student.name;
+            img.onerror = function() {
+                this.src = `https://ui-avatars.com/api/?name=${student.name}&background=0ea5e9&color=fff&size=80`;
             };
             
-            // Set student
-            document.getElementById('student-name').textContent = gameData.selectedStudent.name;
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'character-name';
+            nameDiv.textContent = student.name;
             
-            // Select random teacher
-            selectRandomTeacher();
+            card.appendChild(img);
+            card.appendChild(nameDiv);
             
-            // Create character squares
-            createCharacterSquares();
-            
-            // Reset special attack
-            updateSpecialUI();
-            
-            // Update UI
-            updateBattleUI();
-            updateHealthBars();
-            
-            // Show teacher popup for first teacher
-            setTimeout(() => {
-                showTeacherPopup();
-            }, 500);
-        }
+            container.appendChild(card);
+        });
+    }
 
+    // Load teachers
+    function loadTeachers() {
+        const container = document.getElementById('teacher-characters');
+        container.innerHTML = '';
+        
+        gameData.teachers.forEach(teacher => {
+            const card = document.createElement('div');
+            card.className = 'character-card';
+            
+            const img = document.createElement('img');
+            img.className = 'character-img';
+            img.src = teacher.image;
+            img.alt = teacher.name;
+            img.onerror = function() {
+                this.src = `https://ui-avatars.com/api/?name=${teacher.name}&background=ec4899&color=fff&size=80`;
+            };
+            
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'character-name';
+            nameDiv.textContent = teacher.name;
+            
+            card.appendChild(img);
+            card.appendChild(nameDiv);
+            
+            container.appendChild(card);
+        });
+    }
+
+    // Load high scores
+    function loadHighScores() {
+        const container = document.getElementById('highscore-list');
+        container.innerHTML = '';
+        
+        gameData.highScores.forEach((score, index) => {
+            const item = document.createElement('li');
+            item.className = 'highscore-item';
+            
+            item.innerHTML = `
+                <div class="score-rank">${index + 1}</div>
+                <div style="flex-grow: 1;">
+                    <div style="font-weight: 600; color: #00d4ff; font-size: 1rem;">${score.name}</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8;">Round ${score.round} • ${score.teachersDefeated} teachers</div>
+                </div>
+                <div style="font-weight: 700; color: #ffd700; font-size: 1.1rem;">${score.score.toLocaleString()}</div>
+            `;
+            
+            container.appendChild(item);
+        });
+    }
+
+    // Select student
+    function selectStudent(student) {
+        gameData.selectedStudent = student;
+        
+        // Update UI
+        document.querySelectorAll('#student-characters .character-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        event.currentTarget.classList.add('selected');
+        
+        // Update selected display
+        document.getElementById('selected-text').innerHTML = `
+            <span style="color: #00d4ff;">${student.name}</span>
+            <span style="display: block; font-size: 0.9rem; color: #94a3b8; margin-top: 5px;">Ready for battle</span>
+        `;
+        
+        playSound('tiktokDing');
+    }
+
+    // Switch screens
+    function showScreen(screenId) {
+        // Hide all screens
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        
+        // Show requested screen
+        document.getElementById(screenId).classList.add('active');
+        
+        // Initialize battle if going to battle screen
+        if (screenId === 'battle-screen') {
+            if (gameData.selectedStudent) {
+                initializeBattle();
+            } else {
+                alert('Please select a student first!');
+                showScreen('dashboard-screen');
+            }
+        }
+        
+        // Reset keys
+        gameData.battle.keysPressed = {};
+        
+        playSound('bellRing');
+    }
+
+    // Start battle
+    function startBattle() {
+        if (!gameData.selectedStudent) {
+            alert('Please select a student first!');
+            return;
+        }
+        
+        showScreen('battle-screen');
+        playSound('memeBoom');
+    }
+
+    // Initialize battle
+    function initializeBattle() {
+        // Reset battle state
+        gameData.battle = {
+            studentHealth: 100,
+            teacherHealth: 100,
+            gameActive: true,
+            startTime: Date.now(),
+            totalScore: 0,
+            teachersDefeated: 0,
+            currentRound: 1,
+            studentPosition: { x: 50, y: 150 },
+            teacherPosition: { x: 300, y: 150 },
+            keysPressed: {},
+            projectiles: [],
+            isSpawning: false,
+            moveDirection: null,
+            specialAttackReady: true,
+            specialCooldown: 0,
+            specialMaxCooldown: 5000,
+            specialCooldownInterval: null,
+            showPopup: false,
+            activeEffects: [],
+            teacherSpecialReady: true
+        };
+        
+        // Reset teacher cooldowns
+        gameData.teachers.forEach(teacher => {
+            teacher.lastSpecial = 0;
+        });
+        
+        // Set student
+        document.getElementById('student-name').textContent = gameData.selectedStudent.name;
+        
         // Select random teacher
-        function selectRandomTeacher() {
-            const availableTeachers = gameData.teachers.filter(teacher => 
-                !gameData.currentTeacher || teacher.id !== gameData.currentTeacher.id
-            );
-            
-            const randomIndex = Math.floor(Math.random() * availableTeachers.length);
-            gameData.currentTeacher = availableTeachers[randomIndex];
-            
-            document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
-        }
-
+        selectRandomTeacher();
+        
         // Create character squares
-        function createCharacterSquares() {
-            const arena = document.getElementById('battle-arena');
-            arena.innerHTML = '';
+        createCharacterSquares();
+        
+        // Reset special attack
+        updateSpecialUI();
+        
+        // Update UI
+        updateBattleUI();
+        updateHealthBars();
+        
+        // Play battle start sound
+        playSound('vineBoom');
+        
+        // Show teacher popup for first teacher
+        setTimeout(() => {
+            showTeacherPopup();
+        }, 500);
+    }
+
+    // Select random teacher
+    function selectRandomTeacher() {
+        const availableTeachers = gameData.teachers.filter(teacher => 
+            !gameData.currentTeacher || teacher.id !== gameData.currentTeacher.id
+        );
+        
+        const randomIndex = Math.floor(Math.random() * availableTeachers.length);
+        gameData.currentTeacher = availableTeachers[randomIndex];
+        
+        document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
+    }
+
+    // Create character squares
+    function createCharacterSquares() {
+        const arena = document.getElementById('battle-arena');
+        arena.innerHTML = '';
+        
+        // Create student square
+        const studentSquare = document.createElement('div');
+        studentSquare.className = 'character-square student-square';
+        studentSquare.id = 'student-square';
+        studentSquare.style.left = gameData.battle.studentPosition.x + 'px';
+        studentSquare.style.top = gameData.battle.studentPosition.y + 'px';
+        studentSquare.style.backgroundImage = `url('${gameData.selectedStudent.image}')`;
+        arena.appendChild(studentSquare);
+        
+        // Create teacher square
+        const teacherSquare = document.createElement('div');
+        teacherSquare.className = 'character-square teacher-square';
+        teacherSquare.id = 'teacher-square';
+        teacherSquare.style.left = gameData.battle.teacherPosition.x + 'px';
+        teacherSquare.style.top = gameData.battle.teacherPosition.y + 'px';
+        teacherSquare.style.backgroundImage = `url('${gameData.currentTeacher.image}')`;
+        arena.appendChild(teacherSquare);
+    }
+
+    // Show teacher comic popup
+    function showTeacherPopup() {
+        if (!gameData.currentTeacher) return;
+        
+        gameData.battle.showPopup = true;
+        gameData.battle.gameActive = false;
+        
+        const popup = document.getElementById('teacher-popup');
+        const teacher = gameData.currentTeacher;
+        
+        // Set popup content
+        document.getElementById('popup-teacher-image').src = teacher.image;
+        document.getElementById('popup-teacher-image').alt = teacher.name;
+        document.getElementById('popup-teacher-name').textContent = teacher.name;
+        document.getElementById('popup-teacher-message').textContent = teacher.message;
+        
+        // Show popup
+        popup.style.display = 'block';
+        
+        // Play teacher entrance sound
+        playSound('ahemSound');
+        
+        // Auto-close after 5 seconds
+        setTimeout(() => {
+            if (gameData.battle.showPopup) {
+                closeTeacherPopup();
+            }
+        }, 5000);
+    }
+
+    // Close teacher popup
+    function closeTeacherPopup() {
+        const popup = document.getElementById('teacher-popup');
+        popup.style.display = 'none';
+        gameData.battle.showPopup = false;
+        
+        // Resume game
+        gameData.battle.gameActive = true;
+        
+        // Play resume sound
+        playSound('bellRing');
+    }
+
+    // Update battle UI
+    function updateBattleUI() {
+        document.getElementById('round-count').textContent = gameData.battle.currentRound;
+        document.getElementById('teachers-defeated').textContent = gameData.battle.teachersDefeated;
+        document.getElementById('current-score').textContent = gameData.battle.totalScore.toLocaleString();
+    }
+
+    // Update health bars
+    function updateHealthBars() {
+        const studentHealthPercent = (gameData.battle.studentHealth / 100) * 100;
+        const teacherHealthPercent = (gameData.battle.teacherHealth / 100) * 100;
+        
+        document.getElementById('student-health-bar').style.width = `${studentHealthPercent}%`;
+        document.getElementById('teacher-health-bar').style.width = `${teacherHealthPercent}%`;
+        
+        document.getElementById('student-health-text').textContent = 
+            `${Math.max(0, gameData.battle.studentHealth)}/100`;
+        document.getElementById('teacher-health-text').textContent = 
+            `${Math.max(0, gameData.battle.teacherHealth)}/100`;
+        
+        // Check win conditions
+        if (gameData.battle.teacherHealth <= 0) {
+            teacherDefeated();
+        } else if (gameData.battle.studentHealth <= 0) {
+            endBattle('teacher');
+        }
+    }
+
+    // Handle keyboard input
+    function handleKeyDown(event) {
+        if (gameData.battle.showPopup) return;
+        if (!gameData.battle.gameActive) return;
+        
+        const key = event.key.toLowerCase();
+        gameData.battle.keysPressed[key] = true;
+        
+        // Shoot on space
+        if (key === ' ' && !event.repeat) {
+            shootProjectile();
+            event.preventDefault();
+        }
+        
+        // Special attack on shift
+        if (key === 'shift' && gameData.battle.specialAttackReady && !event.repeat) {
+            specialAttack();
+        }
+        
+        // Pause on escape
+        if (key === 'escape') {
+            // You could add a pause feature here
+            alert('Game paused - Press OK to continue');
+        }
+    }
+
+    function handleKeyUp(event) {
+        const key = event.key.toLowerCase();
+        gameData.battle.keysPressed[key] = false;
+    }
+
+    // Update special cooldown
+    function updateSpecialCooldown() {
+        if (!gameData.battle.gameActive || gameData.battle.showPopup) return;
+        
+        if (!gameData.battle.specialAttackReady) {
+            gameData.battle.specialCooldown -= 100;
             
-            // Create student square
-            const studentSquare = document.createElement('div');
-            studentSquare.className = 'character-square student-square';
-            studentSquare.id = 'student-square';
+            if (gameData.battle.specialCooldown <= 0) {
+                gameData.battle.specialAttackReady = true;
+                gameData.battle.specialCooldown = 0;
+            }
+            
+            updateSpecialUI();
+        }
+    }
+
+    // Update teacher special cooldown
+    function updateTeacherSpecial() {
+        if (!gameData.battle.gameActive || gameData.battle.showPopup || !gameData.currentTeacher) return;
+        
+        const currentTime = Date.now();
+        const teacher = gameData.currentTeacher;
+        
+        // Check if teacher can use special attack
+        if (currentTime - teacher.lastSpecial > teacher.specialCooldown) {
+            // Random chance to use special attack
+            if (Math.random() < 0.005) { // 0.5% chance per 100ms
+                triggerTeacherSpecialAttack();
+            }
+        }
+    }
+
+    // Trigger teacher special attack
+    function triggerTeacherSpecialAttack() {
+        if (!gameData.currentTeacher || !gameData.battle.gameActive) return;
+        
+        const teacher = gameData.currentTeacher;
+        teacher.lastSpecial = Date.now();
+        
+        // Show notification
+        showSpecialAttackNotification(teacher.name + " uses " + getSpecialAttackName(teacher.specialAttack) + "!");
+        
+        // Play special attack sound
+        playSound(teacher.specialAttack);
+        
+        // Execute special attack
+        switch(teacher.specialAttack) {
+            case 'demonetization':
+                demonetizationAttack();
+                break;
+            case 'parentMeeting':
+                parentMeetingAttack();
+                break;
+            case 'attendance':
+                attendanceAttack();
+                break;
+            case 'surpriseTest':
+                surpriseTestAttack();
+                break;
+            case 'birthdayParty':
+                birthdayPartyAttack();
+                break;
+        }
+    }
+
+    // Get special attack display name
+    function getSpecialAttackName(special) {
+        const names = {
+            demonetization: "💰 Demonetization",
+            parentMeeting: "👻 Parent Meeting",
+            attendance: "📝 Attendance Check",
+            surpriseTest: "📚 Surprise Test",
+            birthdayParty: "🎉 Birthday Party"
+        };
+        return names[special] || special;
+    }
+
+    // Show special attack notification
+    function showSpecialAttackNotification(text) {
+        const notification = document.createElement('div');
+        notification.className = 'special-attack-notification';
+        notification.textContent = text;
+        
+        document.body.appendChild(notification);
+        
+        // Remove after animation
+        setTimeout(() => {
+            notification.remove();
+        }, 1500);
+    }
+
+    // Modi: Demonetization - Removes 50% of score
+    function demonetizationAttack() {
+        const oldScore = gameData.battle.totalScore;
+        gameData.battle.totalScore = Math.floor(gameData.battle.totalScore * 0.5);
+        const scoreLost = oldScore - gameData.battle.totalScore;
+        
+        // Create effect
+        const arena = document.getElementById('battle-arena');
+        const effect = document.createElement('div');
+        effect.className = 'special-attack-effect demonetization-effect';
+        arena.appendChild(effect);
+        
+        // Show score loss
+        showDamageNumber(gameData.battle.studentPosition.x + 44, 
+                       gameData.battle.studentPosition.y + 44, 
+                       `-${scoreLost} Score`);
+        
+        // Play cringe sound
+        playSound('cringeLaugh');
+        
+        // Remove effect
+        setTimeout(() => {
+            effect.remove();
+        }, 2000);
+        
+        updateBattleUI();
+    }
+
+    // RN Sir: Parent Meeting - Summons angry parent ghosts
+    function parentMeetingAttack() {
+        const arena = document.getElementById('battle-arena');
+        const arenaRect = arena.getBoundingClientRect();
+        
+        // Create 3 parent ghosts
+        for (let i = 0; i < 3; i++) {
+            const ghost = document.createElement('div');
+            ghost.className = 'parent-ghost';
+            ghost.style.left = Math.random() * (arenaRect.width - 50) + 'px';
+            ghost.style.top = Math.random() * (arenaRect.height - 50) + 'px';
+            arena.appendChild(ghost);
+            
+            // Ghost moves toward student
+            const ghostData = {
+                element: ghost,
+                x: parseInt(ghost.style.left),
+                y: parseInt(ghost.style.top),
+                speed: 2,
+                active: true
+            };
+            
+            gameData.battle.activeEffects.push(ghostData);
+        }
+        
+        // Remove ghosts after 5 seconds
+        setTimeout(() => {
+            gameData.battle.activeEffects = gameData.battle.activeEffects.filter(effect => {
+                if (effect.element.classList.contains('parent-ghost')) {
+                    effect.element.remove();
+                    return false;
+                }
+                return true;
+            });
+        }, 5000);
+    }
+
+    // Sreelekha: Attendance Check - Freezes student in place
+    function attendanceAttack() {
+        // Create freeze effect
+        const arena = document.getElementById('battle-arena');
+        const effect = document.createElement('div');
+        effect.className = 'special-attack-effect attendance-freeze';
+        arena.appendChild(effect);
+        
+        // Freeze student controls for 3 seconds
+        const originalGameActive = gameData.battle.gameActive;
+        gameData.battle.gameActive = false;
+        
+        // Play annoying sound repeatedly
+        const attendanceSound = setInterval(() => {
+            playSound('attendance');
+        }, 500);
+        
+        // Restore after 3 seconds
+        setTimeout(() => {
+            gameData.battle.gameActive = originalGameActive;
+            effect.remove();
+            clearInterval(attendanceSound);
+        }, 3000);
+    }
+
+    // Anuj: Surprise Test - Randomly damages health
+    function surpriseTestAttack() {
+        // Create multiple test effects
+        const arena = document.getElementById('battle-arena');
+        const arenaRect = arena.getBoundingClientRect();
+        
+        for (let i = 0; i < 5; i++) {
+            const testEffect = document.createElement('div');
+            testEffect.className = 'surprise-test-effect';
+            testEffect.style.left = Math.random() * (arenaRect.width - 30) + 'px';
+            testEffect.style.top = Math.random() * (arenaRect.height - 30) + 'px';
+            arena.appendChild(testEffect);
+            
+            // Check if near student
+            setTimeout(() => {
+                const dx = gameData.battle.studentPosition.x - parseInt(testEffect.style.left);
+                const dy = gameData.battle.studentPosition.y - parseInt(testEffect.style.top);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    gameData.battle.studentHealth -= 15;
+                    updateHealthBars();
+                    playSound('damage');
+                }
+                
+                testEffect.remove();
+            }, 1000);
+        }
+    }
+
+    // Punit: Birthday Party - Confetti that blocks vision
+    function birthdayPartyAttack() {
+        const arena = document.getElementById('battle-arena');
+        const arenaRect = arena.getBoundingClientRect();
+        
+        // Create confetti
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+        
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * arenaRect.width + 'px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.opacity = Math.random() * 0.5 + 0.5;
+            
+            arena.appendChild(confetti);
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.remove();
+                }
+            }, 3000);
+        }
+        
+        // Play birthday sound
+        playSound('birthdayParty');
+    }
+
+    // Update special attack UI
+    function updateSpecialUI() {
+        const cooldownPercent = (gameData.battle.specialCooldown / gameData.battle.specialMaxCooldown) * 100;
+        const remainingSeconds = Math.ceil(gameData.battle.specialCooldown / 1000);
+        
+        // Update dashboard cooldown
+        document.getElementById('cooldown-time').textContent = remainingSeconds > 0 ? `${remainingSeconds}s` : 'Ready';
+        document.getElementById('cooldown-fill').style.width = `${100 - cooldownPercent}%`;
+        
+        // Update battle cooldown
+        const specialText = document.getElementById('special-text');
+        const specialBar = document.getElementById('special-cooldown-bar');
+        
+        if (gameData.battle.specialAttackReady) {
+            specialText.textContent = 'Special Ready';
+            specialText.className = 'special-ready';
+            specialBar.style.width = '100%';
+        } else {
+            specialText.textContent = `Cooldown: ${remainingSeconds}s`;
+            specialText.className = 'special-cooldown-battle';
+            specialBar.style.width = `${100 - cooldownPercent}%`;
+        }
+    }
+
+    // Game loop
+    function gameLoop() {
+        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
+        
+        // Move student based on keys
+        const speed = 5;
+        
+        if (gameData.battle.keysPressed['w'] || gameData.battle.keysPressed['arrowup']) {
+            gameData.battle.studentPosition.y -= speed;
+        }
+        if (gameData.battle.keysPressed['s'] || gameData.battle.keysPressed['arrowdown']) {
+            gameData.battle.studentPosition.y += speed;
+        }
+        if (gameData.battle.keysPressed['a'] || gameData.battle.keysPressed['arrowleft']) {
+            gameData.battle.studentPosition.x -= speed;
+        }
+        if (gameData.battle.keysPressed['d'] || gameData.battle.keysPressed['arrowright']) {
+            gameData.battle.studentPosition.x += speed;
+        }
+        
+        // Also check mobile movement
+        if (gameData.battle.moveDirection) {
+            switch(gameData.battle.moveDirection) {
+                case 'up': gameData.battle.studentPosition.y -= speed; break;
+                case 'down': gameData.battle.studentPosition.y += speed; break;
+                case 'left': gameData.battle.studentPosition.x -= speed; break;
+                case 'right': gameData.battle.studentPosition.x += speed; break;
+            }
+        }
+        
+        // Keep student in bounds
+        const arena = document.getElementById('battle-arena');
+        if (arena) {
+            const arenaRect = arena.getBoundingClientRect();
+            
+            gameData.battle.studentPosition.x = Math.max(0, 
+                Math.min(arenaRect.width - 88, gameData.battle.studentPosition.x));
+            gameData.battle.studentPosition.y = Math.max(0, 
+                Math.min(arenaRect.height - 88, gameData.battle.studentPosition.y));
+        }
+        
+        // Update active effects (parent ghosts)
+        gameData.battle.activeEffects.forEach((effect, index) => {
+            if (effect.element.classList.contains('parent-ghost')) {
+                // Move ghost toward student
+                const dx = gameData.battle.studentPosition.x - effect.x;
+                const dy = gameData.battle.studentPosition.y - effect.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0) {
+                    effect.x += (dx / distance) * effect.speed;
+                    effect.y += (dy / distance) * effect.speed;
+                    effect.element.style.left = effect.x + 'px';
+                    effect.element.style.top = effect.y + 'px';
+                    
+                    // Check collision with student
+                    if (distance < 44) { // Student radius
+                        gameData.battle.studentHealth -= 5;
+                        updateHealthBars();
+                        playSound('hit');
+                        
+                        // Remove ghost on hit
+                        effect.element.remove();
+                        gameData.battle.activeEffects.splice(index, 1);
+                    }
+                }
+            }
+        });
+        
+        // AI teacher movement
+        moveTeacherAI();
+        
+        // Update positions
+        updatePositions();
+        
+        // Update projectiles
+        updateProjectiles();
+        
+        // Check collisions
+        checkCollisions();
+    }
+
+    // AI teacher movement
+    function moveTeacherAI() {
+        const speed = 2.5 + (gameData.battle.currentRound * 0.3);
+        const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
+        const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 100) {
+            gameData.battle.teacherPosition.x += (dx / distance) * speed;
+            gameData.battle.teacherPosition.y += (dy / distance) * speed;
+        }
+        
+        // Random attack
+        if (Math.random() < 0.01 && distance < 250) {
+            teacherAttack();
+        }
+    }
+
+    // Update positions
+    function updatePositions() {
+        const studentSquare = document.getElementById('student-square');
+        const teacherSquare = document.getElementById('teacher-square');
+        
+        if (studentSquare) {
             studentSquare.style.left = gameData.battle.studentPosition.x + 'px';
             studentSquare.style.top = gameData.battle.studentPosition.y + 'px';
-            studentSquare.style.backgroundImage = `url('${gameData.selectedStudent.image}')`;
-            arena.appendChild(studentSquare);
-            
-            // Create teacher square
-            const teacherSquare = document.createElement('div');
-            teacherSquare.className = 'character-square teacher-square';
-            teacherSquare.id = 'teacher-square';
+        }
+        
+        if (teacherSquare) {
             teacherSquare.style.left = gameData.battle.teacherPosition.x + 'px';
             teacherSquare.style.top = gameData.battle.teacherPosition.y + 'px';
-            teacherSquare.style.backgroundImage = `url('${gameData.currentTeacher.image}')`;
-            arena.appendChild(teacherSquare);
         }
+    }
 
-        // Show teacher comic popup
-        function showTeacherPopup() {
-            if (!gameData.currentTeacher) return;
-            
-            gameData.battle.showPopup = true;
-            gameData.battle.gameActive = false;
-            
-            const popup = document.getElementById('teacher-popup');
-            const teacher = gameData.currentTeacher;
-            
-            // Set popup content
-            document.getElementById('popup-teacher-image').src = teacher.image;
-            document.getElementById('popup-teacher-image').alt = teacher.name;
-            document.getElementById('popup-teacher-name').textContent = teacher.name;
-            document.getElementById('popup-teacher-message').textContent = teacher.message;
-            
-            // Show popup
-            popup.style.display = 'block';
-            
-            // Auto-close after 5 seconds
-            setTimeout(() => {
-                if (gameData.battle.showPopup) {
-                    closeTeacherPopup();
-                }
-            }, 5000);
-        }
+    // Shoot projectile
+    function shootProjectile() {
+        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
+        
+        // Calculate direction towards teacher
+        const dx = gameData.battle.teacherPosition.x - gameData.battle.studentPosition.x;
+        const dy = gameData.battle.teacherPosition.y - gameData.battle.studentPosition.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        const velocityX = (dx / distance) * 8;
+        const velocityY = (dy / distance) * 8;
+        
+        createProjectile(
+            gameData.battle.studentPosition.x + 44, // Center of 88px square
+            gameData.battle.studentPosition.y + 44,
+            velocityX, velocityY, 'student', 10, false
+        );
+        
+        playSound('shoot');
+    }
 
-        // Close teacher popup
-        function closeTeacherPopup() {
-            const popup = document.getElementById('teacher-popup');
-            popup.style.display = 'none';
-            gameData.battle.showPopup = false;
-            
-            // Resume game
-            gameData.battle.gameActive = true;
-        }
-
-        // Update battle UI
-        function updateBattleUI() {
-            document.getElementById('round-count').textContent = gameData.battle.currentRound;
-            document.getElementById('teachers-defeated').textContent = gameData.battle.teachersDefeated;
-            document.getElementById('current-score').textContent = gameData.battle.totalScore.toLocaleString();
-        }
-
-        // Update health bars
-        function updateHealthBars() {
-            const studentHealthPercent = (gameData.battle.studentHealth / 100) * 100;
-            const teacherHealthPercent = (gameData.battle.teacherHealth / 100) * 100;
-            
-            document.getElementById('student-health-bar').style.width = `${studentHealthPercent}%`;
-            document.getElementById('teacher-health-bar').style.width = `${teacherHealthPercent}%`;
-            
-            document.getElementById('student-health-text').textContent = 
-                `${Math.max(0, gameData.battle.studentHealth)}/100`;
-            document.getElementById('teacher-health-text').textContent = 
-                `${Math.max(0, gameData.battle.teacherHealth)}/100`;
-            
-            // Check win conditions
-            if (gameData.battle.teacherHealth <= 0) {
-                teacherDefeated();
-            } else if (gameData.battle.studentHealth <= 0) {
-                endBattle('teacher');
-            }
-        }
-
-        // Handle keyboard input
-        function handleKeyDown(event) {
-            if (gameData.battle.showPopup) return;
-            if (!gameData.battle.gameActive) return;
-            
-            const key = event.key.toLowerCase();
-            gameData.battle.keysPressed[key] = true;
-            
-            // Shoot on space
-            if (key === ' ' && !event.repeat) {
-                shootProjectile();
-                event.preventDefault();
-            }
-            
-            // Special attack on shift
-            if (key === 'shift' && gameData.battle.specialAttackReady && !event.repeat) {
-                specialAttack();
-            }
-            
-            // Pause on escape
-            if (key === 'escape') {
-                // You could add a pause feature here
-                alert('Game paused - Press OK to continue');
-            }
-        }
-
-        function handleKeyUp(event) {
-            const key = event.key.toLowerCase();
-            gameData.battle.keysPressed[key] = false;
-        }
-
-        // Update special cooldown
-        function updateSpecialCooldown() {
-            if (!gameData.battle.gameActive || gameData.battle.showPopup) return;
-            
-            if (!gameData.battle.specialAttackReady) {
-                gameData.battle.specialCooldown -= 100;
-                
-                if (gameData.battle.specialCooldown <= 0) {
-                    gameData.battle.specialAttackReady = true;
-                    gameData.battle.specialCooldown = 0;
-                }
-                
-                updateSpecialUI();
-            }
-        }
-
-        // Update special attack UI
-        function updateSpecialUI() {
-            const cooldownPercent = (gameData.battle.specialCooldown / gameData.battle.specialMaxCooldown) * 100;
-            const remainingSeconds = Math.ceil(gameData.battle.specialCooldown / 1000);
-            
-            // Update dashboard cooldown
-            document.getElementById('cooldown-time').textContent = remainingSeconds > 0 ? `${remainingSeconds}s` : 'Ready';
-            document.getElementById('cooldown-fill').style.width = `${100 - cooldownPercent}%`;
-            
-            // Update battle cooldown
-            const specialText = document.getElementById('special-text');
-            const specialBar = document.getElementById('special-cooldown-bar');
-            
-            if (gameData.battle.specialAttackReady) {
-                specialText.textContent = 'Special Ready';
-                specialText.className = 'special-ready';
-                specialBar.style.width = '100%';
-            } else {
-                specialText.textContent = `Cooldown: ${remainingSeconds}s`;
-                specialText.className = 'special-cooldown-battle';
-                specialBar.style.width = `${100 - cooldownPercent}%`;
-            }
-        }
-
-        // Game loop
-        function gameLoop() {
-            if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
-            
-            // Move student based on keys
-            const speed = 5;
-            
-            if (gameData.battle.keysPressed['w'] || gameData.battle.keysPressed['arrowup']) {
-                gameData.battle.studentPosition.y -= speed;
-            }
-            if (gameData.battle.keysPressed['s'] || gameData.battle.keysPressed['arrowdown']) {
-                gameData.battle.studentPosition.y += speed;
-            }
-            if (gameData.battle.keysPressed['a'] || gameData.battle.keysPressed['arrowleft']) {
-                gameData.battle.studentPosition.x -= speed;
-            }
-            if (gameData.battle.keysPressed['d'] || gameData.battle.keysPressed['arrowright']) {
-                gameData.battle.studentPosition.x += speed;
-            }
-            
-            // Also check mobile movement
-            if (gameData.battle.moveDirection) {
-                switch(gameData.battle.moveDirection) {
-                    case 'up': gameData.battle.studentPosition.y -= speed; break;
-                    case 'down': gameData.battle.studentPosition.y += speed; break;
-                    case 'left': gameData.battle.studentPosition.x -= speed; break;
-                    case 'right': gameData.battle.studentPosition.x += speed; break;
-                }
-            }
-            
-            // Keep student in bounds
-            const arena = document.getElementById('battle-arena');
-            if (arena) {
-                const arenaRect = arena.getBoundingClientRect();
-                
-                gameData.battle.studentPosition.x = Math.max(0, 
-                    Math.min(arenaRect.width - 88, gameData.battle.studentPosition.x));
-                gameData.battle.studentPosition.y = Math.max(0, 
-                    Math.min(arenaRect.height - 88, gameData.battle.studentPosition.y));
-            }
-            
-            // AI teacher movement
-            moveTeacherAI();
-            
-            // Update positions
-            updatePositions();
-            
-            // Update projectiles
-            updateProjectiles();
-            
-            // Check collisions
-            checkCollisions();
-        }
-
-        // AI teacher movement
-        function moveTeacherAI() {
-            const speed = 2.5 + (gameData.battle.currentRound * 0.3);
-            const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
-            const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance > 100) {
-                gameData.battle.teacherPosition.x += (dx / distance) * speed;
-                gameData.battle.teacherPosition.y += (dy / distance) * speed;
-            }
-            
-            // Random attack
-            if (Math.random() < 0.01 && distance < 250) {
-                teacherAttack();
-            }
-        }
-
-        // Update positions
-        function updatePositions() {
-            const studentSquare = document.getElementById('student-square');
-            const teacherSquare = document.getElementById('teacher-square');
-            
-            if (studentSquare) {
-                studentSquare.style.left = gameData.battle.studentPosition.x + 'px';
-                studentSquare.style.top = gameData.battle.studentPosition.y + 'px';
-            }
-            
-            if (teacherSquare) {
-                teacherSquare.style.left = gameData.battle.teacherPosition.x + 'px';
-                teacherSquare.style.top = gameData.battle.teacherPosition.y + 'px';
-            }
-        }
-
-        // Shoot projectile
-        function shootProjectile() {
-            if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
-            
-            // Calculate direction towards teacher
-            const dx = gameData.battle.teacherPosition.x - gameData.battle.studentPosition.x;
-            const dy = gameData.battle.teacherPosition.y - gameData.battle.studentPosition.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            const velocityX = (dx / distance) * 8;
-            const velocityY = (dy / distance) * 8;
-            
+    // Special attack with cooldown
+    function specialAttack() {
+        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || !gameData.battle.specialAttackReady) return;
+        
+        // Create 5 spread projectiles
+        for (let i = -2; i <= 2; i++) {
+            const angle = i * 0.4;
             createProjectile(
                 gameData.battle.studentPosition.x + 44, // Center of 88px square
                 gameData.battle.studentPosition.y + 44,
-                velocityX, velocityY, 'student', 10, false
+                Math.cos(angle) * 10, Math.sin(angle) * 10, 'student', 20, true
             );
         }
+        
+        // Start cooldown
+        gameData.battle.specialAttackReady = false;
+        gameData.battle.specialCooldown = gameData.battle.specialMaxCooldown;
+        
+        updateSpecialUI();
+        playSound('special');
+    }
 
-        // Special attack with cooldown
-        function specialAttack() {
-            if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || !gameData.battle.specialAttackReady) return;
-            
-            // Create 5 spread projectiles
-            for (let i = -2; i <= 2; i++) {
-                const angle = i * 0.4;
-                createProjectile(
-                    gameData.battle.studentPosition.x + 44, // Center of 88px square
-                    gameData.battle.studentPosition.y + 44,
-                    Math.cos(angle) * 10, Math.sin(angle) * 10, 'student', 20, true
-                );
-            }
-            
-            // Start cooldown
-            gameData.battle.specialAttackReady = false;
-            gameData.battle.specialCooldown = gameData.battle.specialMaxCooldown;
-            
-            updateSpecialUI();
+    // Teacher attack
+    function teacherAttack() {
+        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
+        
+        const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
+        const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        const velocityX = (dx / distance) * 6;
+        const velocityY = (dy / distance) * 6;
+        
+        createProjectile(
+            gameData.battle.teacherPosition.x + 35, // Center of 70px square
+            gameData.battle.teacherPosition.y + 35,
+            velocityX, velocityY, 'teacher', 8, false
+        );
+        
+        playSound('shoot', 0.1);
+    }
+
+    // Create projectile
+    function createProjectile(x, y, vx, vy, type, damage, isSpecial) {
+        const arena = document.getElementById('battle-arena');
+        const projectile = document.createElement('div');
+        
+        if (isSpecial) {
+            projectile.className = 'projectile special-projectile';
+        } else {
+            projectile.className = `projectile ${type}-projectile`;
         }
+        
+        projectile.style.left = x + 'px';
+        projectile.style.top = y + 'px';
+        
+        arena.appendChild(projectile);
+        
+        gameData.battle.projectiles.push({
+            element: projectile,
+            x: x,
+            y: y,
+            vx: vx,
+            vy: vy,
+            type: type,
+            damage: damage,
+            isSpecial: isSpecial,
+            active: true
+        });
+    }
 
-        // Teacher attack
-        function teacherAttack() {
-            if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
+    // Update projectiles
+    function updateProjectiles() {
+        const arena = document.getElementById('battle-arena');
+        if (!arena) return;
+        
+        const arenaRect = arena.getBoundingClientRect();
+        
+        for (let i = gameData.battle.projectiles.length - 1; i >= 0; i--) {
+            const proj = gameData.battle.projectiles[i];
+            if (!proj.active) continue;
             
-            const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
-            const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
+            // Update position
+            proj.x += proj.vx;
+            proj.y += proj.vy;
+            
+            proj.element.style.left = proj.x + 'px';
+            proj.element.style.top = proj.y + 'px';
+            
+            // Check collision
+            const targetPos = proj.type === 'student' ? 
+                gameData.battle.teacherPosition : gameData.battle.studentPosition;
+            
+            const targetRadius = proj.type === 'student' ? 35 : 44;
+            
+            const dx = proj.x - (targetPos.x + (proj.type === 'student' ? 35 : 44));
+            const dy = proj.y - (targetPos.y + (proj.type === 'student' ? 35 : 44));
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            const velocityX = (dx / distance) * 6;
-            const velocityY = (dy / distance) * 6;
-            
-            createProjectile(
-                gameData.battle.teacherPosition.x + 35, // Center of 70px square
-                gameData.battle.teacherPosition.y + 35,
-                velocityX, velocityY, 'teacher', 8, false
-            );
-        }
-
-        // Create projectile
-        function createProjectile(x, y, vx, vy, type, damage, isSpecial) {
-            const arena = document.getElementById('battle-arena');
-            const projectile = document.createElement('div');
-            
-            if (isSpecial) {
-                projectile.className = 'projectile special-projectile';
-            } else {
-                projectile.className = `projectile ${type}-projectile`;
-            }
-            
-            projectile.style.left = x + 'px';
-            projectile.style.top = y + 'px';
-            
-            arena.appendChild(projectile);
-            
-            gameData.battle.projectiles.push({
-                element: projectile,
-                x: x,
-                y: y,
-                vx: vx,
-                vy: vy,
-                type: type,
-                damage: damage,
-                isSpecial: isSpecial,
-                active: true
-            });
-        }
-
-        // Update projectiles
-        function updateProjectiles() {
-            const arena = document.getElementById('battle-arena');
-            if (!arena) return;
-            
-            const arenaRect = arena.getBoundingClientRect();
-            
-            for (let i = gameData.battle.projectiles.length - 1; i >= 0; i--) {
-                const proj = gameData.battle.projectiles[i];
-                if (!proj.active) continue;
-                
-                // Update position
-                proj.x += proj.vx;
-                proj.y += proj.vy;
-                
-                proj.element.style.left = proj.x + 'px';
-                proj.element.style.top = proj.y + 'px';
-                
-                // Check collision
-                const targetPos = proj.type === 'student' ? 
-                    gameData.battle.teacherPosition : gameData.battle.studentPosition;
-                
-                const targetRadius = proj.type === 'student' ? 35 : 44;
-                
-                const dx = proj.x - (targetPos.x + (proj.type === 'student' ? 35 : 44));
-                const dy = proj.y - (targetPos.y + (proj.type === 'student' ? 35 : 44));
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < targetRadius) {
-                    // Hit!
-                    if (proj.type === 'student') {
-                        gameData.battle.teacherHealth -= proj.damage;
-                        gameData.battle.totalScore += proj.damage * 15;
-                    } else {
-                        gameData.battle.studentHealth -= proj.damage;
-                    }
-                    
-                    // Show damage number
-                    showDamageNumber(targetPos.x + (proj.type === 'student' ? 35 : 44), 
-                                   targetPos.y + (proj.type === 'student' ? 35 : 44), 
-                                   proj.damage);
-                    
-                    // Remove projectile
-                    proj.element.remove();
-                    proj.active = false;
-                    gameData.battle.projectiles.splice(i, 1);
-                    
-                    updateHealthBars();
-                    updateBattleUI();
-                    continue;
+            if (distance < targetRadius) {
+                // Hit!
+                if (proj.type === 'student') {
+                    gameData.battle.teacherHealth -= proj.damage;
+                    gameData.battle.totalScore += proj.damage * 15;
+                } else {
+                    gameData.battle.studentHealth -= proj.damage;
                 }
                 
-                // Remove if out of bounds
-                if (proj.x < -50 || proj.x > arenaRect.width + 50 || 
-                    proj.y < -50 || proj.y > arenaRect.height + 50) {
-                    proj.element.remove();
-                    proj.active = false;
-                    gameData.battle.projectiles.splice(i, 1);
-                }
-            }
-        }
-
-        // Show damage number
-        function showDamageNumber(x, y, damage) {
-            const arena = document.getElementById('battle-arena');
-            const damageText = document.createElement('div');
-            damageText.className = 'damage-text';
-            damageText.textContent = `-${damage}`;
-            damageText.style.left = x + 'px';
-            damageText.style.top = y + 'px';
-            
-            arena.appendChild(damageText);
-            
-            // Auto-remove
-            setTimeout(() => {
-                if (damageText.parentNode) {
-                    damageText.parentNode.removeChild(damageText);
-                }
-            }, 1000);
-        }
-
-        // Check collisions
-        function checkCollisions() {
-            const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
-            const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            // Student is 44px radius, teacher is 35px radius
-            if (distance < 79) { // 44 + 35 = 79
-                // Push apart
-                const push = 5;
-                gameData.battle.studentPosition.x += (dx / distance) * push;
-                gameData.battle.studentPosition.y += (dy / distance) * push;
-                gameData.battle.teacherPosition.x -= (dx / distance) * push;
-                gameData.battle.teacherPosition.y -= (dy / distance) * push;
+                // Show damage number
+                showDamageNumber(targetPos.x + (proj.type === 'student' ? 35 : 44), 
+                               targetPos.y + (proj.type === 'student' ? 35 : 44), 
+                               proj.damage);
                 
-                // Small damage on collision
-                gameData.battle.studentHealth -= 1;
-                gameData.battle.teacherHealth -= 2;
+                // Remove projectile
+                proj.element.remove();
+                proj.active = false;
+                gameData.battle.projectiles.splice(i, 1);
+                
+                // Play hit sound
+                playSound('hit');
+                
                 updateHealthBars();
+                updateBattleUI();
+                continue;
+            }
+            
+            // Remove if out of bounds
+            if (proj.x < -50 || proj.x > arenaRect.width + 50 || 
+                proj.y < -50 || proj.y > arenaRect.height + 50) {
+                proj.element.remove();
+                proj.active = false;
+                gameData.battle.projectiles.splice(i, 1);
             }
         }
+    }
 
-        // Teacher defeated
-        function teacherDefeated() {
-            gameData.battle.isSpawning = true;
-            gameData.battle.gameActive = false;
-            gameData.battle.teachersDefeated++;
-            gameData.battle.totalScore += 1000;
-            gameData.battle.currentRound++;
-            
-            // Show spawn screen
-            const spawnScreen = document.getElementById('next-teacher-spawn');
-            spawnScreen.style.display = 'flex';
-            
-            // Clear projectiles
-            gameData.battle.projectiles.forEach(proj => proj.element.remove());
-            gameData.battle.projectiles = [];
-            
-            // Start spawn timer
-            let timer = 3;
-            document.getElementById('spawn-timer').textContent = timer;
-            
-            const countdown = setInterval(() => {
-                timer--;
-                document.getElementById('spawn-timer').textContent = timer;
-                
-                if (timer <= 0) {
-                    clearInterval(countdown);
-                    spawnScreen.style.display = 'none';
-                    
-                    // Spawn new teacher
-                    spawnNextTeacher();
-                }
-            }, 1000);
-        }
+    // Show damage number
+    function showDamageNumber(x, y, damage) {
+        const arena = document.getElementById('battle-arena');
+        const damageText = document.createElement('div');
+        damageText.className = 'damage-text';
+        damageText.textContent = `-${damage}`;
+        damageText.style.left = x + 'px';
+        damageText.style.top = y + 'px';
+        
+        arena.appendChild(damageText);
+        
+        // Auto-remove
+        setTimeout(() => {
+            if (damageText.parentNode) {
+                damageText.parentNode.removeChild(damageText);
+            }
+        }, 1000);
+    }
 
-        // Spawn next teacher
-        function spawnNextTeacher() {
-            // Select new random teacher
-            selectRandomTeacher();
+    // Check collisions
+    function checkCollisions() {
+        const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
+        const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        // Student is 44px radius, teacher is 35px radius
+        if (distance < 79) { // 44 + 35 = 79
+            // Push apart
+            const push = 5;
+            gameData.battle.studentPosition.x += (dx / distance) * push;
+            gameData.battle.studentPosition.y += (dy / distance) * push;
+            gameData.battle.teacherPosition.x -= (dx / distance) * push;
+            gameData.battle.teacherPosition.y -= (dy / distance) * push;
             
-            // Reset positions
-            const arena = document.getElementById('battle-arena');
-            const arenaRect = arena.getBoundingClientRect();
-            
-            gameData.battle.studentPosition.x = 50;
-            gameData.battle.studentPosition.y = arenaRect.height / 2 - 44;
-            gameData.battle.teacherPosition.x = arenaRect.width - 120;
-            gameData.battle.teacherPosition.y = arenaRect.height / 2 - 35;
-            
-            // Reset teacher health (increase with rounds)
-            gameData.battle.teacherHealth = 100 + (gameData.battle.currentRound - 1) * 20;
-            
-            // Heal student slightly between rounds
-            gameData.battle.studentHealth = Math.min(100, gameData.battle.studentHealth + 10);
-            
-            // Update teacher square
-            const teacherSquare = document.getElementById('teacher-square');
-            teacherSquare.style.backgroundImage = `url('${gameData.currentTeacher.image}')`;
-            
-            // Update UI
-            document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
-            updatePositions();
-            updateBattleUI();
+            // Small damage on collision
+            gameData.battle.studentHealth -= 1;
+            gameData.battle.teacherHealth -= 2;
             updateHealthBars();
             
-            // Resume game
-            gameData.battle.isSpawning = false;
-            gameData.battle.gameActive = true;
-            
-            // Show teacher popup for new teacher
-            setTimeout(() => {
-                showTeacherPopup();
-            }, 300);
-        }
-
-        // Mobile controls
-        function moveStudent(direction) {
-            if (gameData.battle.showPopup) return;
-            gameData.battle.moveDirection = direction;
-        }
-
-        function stopMoveStudent() {
-            gameData.battle.moveDirection = null;
-        }
-
-        // End battle
-        function endBattle(winner) {
-            gameData.battle.gameActive = false;
-            
-            // Calculate battle time
-            const battleTime = Math.floor((Date.now() - gameData.battle.startTime) / 1000);
-            
-            // Update results
-            document.getElementById('result-title').textContent = 
-                winner === 'student' ? 'VICTORY!' : 'GAME OVER';
-            
-            document.getElementById('winner-text').textContent = 
-                winner === 'student' ? 'Student Wins!' : 'Teacher Wins!';
-            
-            document.getElementById('winner-name').textContent = winner === 'student' ? 
-                gameData.selectedStudent.name : gameData.currentTeacher.name;
-            
-            document.getElementById('teachers-defeated-result').textContent = gameData.battle.teachersDefeated;
-            document.getElementById('total-score').textContent = gameData.battle.totalScore.toLocaleString();
-            document.getElementById('battle-time').textContent = battleTime;
-            document.getElementById('round-result').textContent = gameData.battle.currentRound;
-            
-            // Update summary
-            const summary = winner === 'student' ? 
-                `${gameData.selectedStudent.name} defeated ${gameData.battle.teachersDefeated} teachers in ${battleTime} seconds!` :
-                `${gameData.currentTeacher.name} won in round ${gameData.battle.currentRound}.`;
-            
-            document.getElementById('battle-summary').textContent = summary;
-            
-            // Update high scores if student won and score is high enough
-            if (winner === 'student') {
-                const newScore = {
-                    name: gameData.selectedStudent.name,
-                    score: gameData.battle.totalScore,
-                    teachersDefeated: gameData.battle.teachersDefeated,
-                    round: gameData.battle.currentRound
-                };
-                
-                // Add new score
-                gameData.highScores.push(newScore);
-                
-                // Sort and keep top 5
-                gameData.highScores.sort((a, b) => b.score - a.score);
-                gameData.highScores = gameData.highScores.slice(0, 5);
-                loadHighScores();
+            // Play collision sound
+            if (Math.random() < 0.3) {
+                playSound('oops');
             }
-            
-            // Show results screen
-            showScreen('results-screen');
         }
+    }
 
-        // Rematch
-        function rematch() {
-            showScreen('battle-screen');
-            setTimeout(() => {
-                initializeBattle();
-            }, 100);
+    // Teacher defeated
+    function teacherDefeated() {
+        gameData.battle.isSpawning = true;
+        gameData.battle.gameActive = false;
+        gameData.battle.teachersDefeated++;
+        gameData.battle.totalScore += 1000;
+        gameData.battle.currentRound++;
+        
+        // Play victory sound
+        playSound('heal');
+        playSound('cringeLaugh');
+        
+        // Show spawn screen
+        const spawnScreen = document.getElementById('next-teacher-spawn');
+        spawnScreen.style.display = 'flex';
+        
+        // Clear projectiles and effects
+        gameData.battle.projectiles.forEach(proj => proj.element.remove());
+        gameData.battle.projectiles = [];
+        gameData.battle.activeEffects.forEach(effect => effect.element.remove());
+        gameData.battle.activeEffects = [];
+        
+        // Start spawn timer
+        let timer = 3;
+        document.getElementById('spawn-timer').textContent = timer;
+        
+        const countdown = setInterval(() => {
+            timer--;
+            document.getElementById('spawn-timer').textContent = timer;
+            
+            if (timer <= 0) {
+                clearInterval(countdown);
+                spawnScreen.style.display = 'none';
+                
+                // Spawn new teacher
+                spawnNextTeacher();
+            }
+        }, 1000);
+    }
+
+    // Spawn next teacher
+    function spawnNextTeacher() {
+        // Select new random teacher
+        selectRandomTeacher();
+        
+        // Reset positions
+        const arena = document.getElementById('battle-arena');
+        const arenaRect = arena.getBoundingClientRect();
+        
+        gameData.battle.studentPosition.x = 50;
+        gameData.battle.studentPosition.y = arenaRect.height / 2 - 44;
+        gameData.battle.teacherPosition.x = arenaRect.width - 120;
+        gameData.battle.teacherPosition.y = arenaRect.height / 2 - 35;
+        
+        // Reset teacher health (increase with rounds)
+        gameData.battle.teacherHealth = 100 + (gameData.battle.currentRound - 1) * 20;
+        
+        // Heal student slightly between rounds
+        gameData.battle.studentHealth = Math.min(100, gameData.battle.studentHealth + 10);
+        
+        // Update teacher square
+        const teacherSquare = document.getElementById('teacher-square');
+        teacherSquare.style.backgroundImage = `url('${gameData.currentTeacher.image}')`;
+        
+        // Update UI
+        document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
+        updatePositions();
+        updateBattleUI();
+        updateHealthBars();
+        
+        // Resume game
+        gameData.battle.isSpawning = false;
+        gameData.battle.gameActive = true;
+        
+        // Show teacher popup for new teacher
+        setTimeout(() => {
+            showTeacherPopup();
+        }, 300);
+    }
+
+    // Mobile controls
+    function moveStudent(direction) {
+        if (gameData.battle.showPopup) return;
+        gameData.battle.moveDirection = direction;
+    }
+
+    function stopMoveStudent() {
+        gameData.battle.moveDirection = null;
+    }
+
+    // End battle
+    function endBattle(winner) {
+        gameData.battle.gameActive = false;
+        
+        // Calculate battle time
+        const battleTime = Math.floor((Date.now() - gameData.battle.startTime) / 1000);
+        
+        // Update results
+        document.getElementById('result-title').textContent = 
+            winner === 'student' ? 'VICTORY!' : 'GAME OVER';
+        
+        document.getElementById('winner-text').textContent = 
+            winner === 'student' ? 'Student Wins!' : 'Teacher Wins!';
+        
+        document.getElementById('winner-name').textContent = winner === 'student' ? 
+            gameData.selectedStudent.name : gameData.currentTeacher.name;
+        
+        document.getElementById('teachers-defeated-result').textContent = gameData.battle.teachersDefeated;
+        document.getElementById('total-score').textContent = gameData.battle.totalScore.toLocaleString();
+        document.getElementById('battle-time').textContent = battleTime;
+        document.getElementById('round-result').textContent = gameData.battle.currentRound;
+        
+        // Update summary
+        const summary = winner === 'student' ? 
+            `${gameData.selectedStudent.name} defeated ${gameData.battle.teachersDefeated} teachers in ${battleTime} seconds!` :
+            `${gameData.currentTeacher.name} won in round ${gameData.battle.currentRound}.`;
+        
+        document.getElementById('battle-summary').textContent = summary;
+        
+        // Play end game sound
+        if (winner === 'student') {
+            playSound('special');
+        } else {
+            playSound('damage');
         }
-    </script>
+        
+        // Update high scores if student won and score is high enough
+        if (winner === 'student') {
+            const newScore = {
+                name: gameData.selectedStudent.name,
+                score: gameData.battle.totalScore,
+                teachersDefeated: gameData.battle.teachersDefeated,
+                round: gameData.battle.currentRound
+            };
+            
+            // Add new score
+            gameData.highScores.push(newScore);
+            
+            // Sort and keep top 5
+            gameData.highScores.sort((a, b) => b.score - a.score);
+            gameData.highScores = gameData.highScores.slice(0, 5);
+            loadHighScores();
+        }
+        
+        // Show results screen
+        showScreen('results-screen');
+    }
+
+    // Rematch
+    function rematch() {
+        showScreen('battle-screen');
+        setTimeout(() => {
+            initializeBattle();
+        }, 100);
+        playSound('bellRing');
+    }
+</script>
 </body>
 </html>
