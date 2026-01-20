@@ -1755,7 +1755,10 @@
         sounds: {
             enabled: true,
             musicEnabled: true,
-            audioContext: null
+            audioContext: null,
+            audioElements: {},
+            // Track which sounds have been played to avoid duplicates
+            playedSounds: new Set()
         },
         
         battle: {
@@ -1787,35 +1790,24 @@
         }
     };
 
-    // Sound system using Web Audio API
-    const soundEffects = {
-        // Cringe sounds (synthesized)
-        cringeLaugh: { type: 'tone', frequency: [800, 600, 400], duration: 0.8, volume: 0.3 },
-        awkwardCough: { type: 'noise', duration: 0.5, volume: 0.3 },
-        ahemSound: { type: 'tone', frequency: 400, duration: 0.3, volume: 0.3 },
-        bellRing: { type: 'tone', frequency: 800, duration: 0.5, volume: 0.4 },
-        oops: { type: 'tone', frequency: [600, 400], duration: 0.4, volume: 0.3 },
-        
-        // Game sounds
-        shoot: { type: 'tone', frequency: 300, duration: 0.1, volume: 0.2 },
-        hit: { type: 'noise', duration: 0.2, volume: 0.3 },
-        special: { type: 'tone', frequency: [800, 1200, 800], duration: 0.5, volume: 0.4 },
-        heal: { type: 'tone', frequency: [600, 800, 1000], duration: 0.3, volume: 0.3 },
-        damage: { type: 'noise', duration: 0.3, volume: 0.4 },
-        
-        // Teacher special attack sounds
-        demonetization: { type: 'tone', frequency: [200, 100, 50], duration: 1, volume: 0.4 },
-        parentMeeting: { type: 'noise', duration: 1, volume: 0.3 },
-        attendance: { type: 'tone', frequency: 500, duration: 0.5, volume: 0.3 },
-        surpriseTest: { type: 'tone', frequency: [1000, 800, 600], duration: 0.5, volume: 0.4 },
-        birthdayParty: { type: 'tone', frequency: [600, 800, 600, 800], duration: 1, volume: 0.4 },
-        
-        // Funny sounds
-        tiktokDing: { type: 'tone', frequency: 1200, duration: 0.1, volume: 0.3 },
-        memeBoom: { type: 'noise', duration: 0.5, volume: 0.5 },
-        vineBoom: { type: 'noise', duration: 0.3, volume: 0.4 },
-        bruhSound: { type: 'tone', frequency: [200, 150], duration: 0.3, volume: 0.3 },
-        sheesh: { type: 'tone', frequency: [800, 1000, 800], duration: 0.2, volume: 0.3 }
+    // Sound library URLs - Local files
+    const soundLibrary = {
+        'Alert': 'Alert.mp3',
+        'Burp': 'Burp.mp3',
+        'Crickets': 'Crickets.mp3',
+        'Crowd Laughing': 'Crowd Laughing.mp3',
+        'Goat Scream': 'Goat Scream.mp3',
+        'GTA 5 Wasted': 'GTA 5 Wasted.mp3',
+        'Heavenly Sound': 'Heavenly Sound.mp3',
+        'Inception': 'Inception.mp3',
+        'Main Audio': 'Main Audio.mp3',
+        'No God Please No': 'No God Please No.mp3',
+        'Oh No No No': 'Oh No No No.mp3',
+        'Ohhhhhhhhhh': 'Ohhhhhhhhhh.mp3',
+        'Rubber Duck': 'Rubber Duck.mp3',
+        'Taco Bell': 'Taco Bell.mp3',
+        'Wow': 'Wow.mp3',
+        'RNintro': 'RNintro.mp3'
     };
 
     // Initialize game
@@ -1824,8 +1816,11 @@
         loadTeachers();
         loadHighScores();
         
-        // Initialize audio context
+        // Initialize audio
         initAudio();
+        
+        // Preload sound effects
+        preloadSounds();
         
         // Set up keyboard controls
         document.addEventListener('keydown', handleKeyDown);
@@ -1854,8 +1849,8 @@
         // Update teacher special cooldown
         setInterval(updateTeacherSpecial, 100);
         
-        // Random cringe sounds during gameplay
-        setInterval(playRandomCringeSound, 8000);
+        // Random sound effects during gameplay
+        setInterval(playRandomGameSound, 10000);
     });
 
     // Initialize audio
@@ -1864,107 +1859,108 @@
             gameData.sounds.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             console.log("Audio initialized successfully");
         } catch (e) {
-            console.log("Web Audio API not supported");
+            console.log("Web Audio API not supported, using HTML5 Audio");
             gameData.sounds.enabled = false;
         }
     }
 
-    // Play synthesized sound
-    function playSound(soundName, customVolume = null) {
-        if (!gameData.sounds.enabled || !gameData.sounds.audioContext) return;
+    // Preload sounds
+    function preloadSounds() {
+        for (const [name, url] of Object.entries(soundLibrary)) {
+            const audio = new Audio();
+            audio.src = url;
+            audio.preload = 'auto';
+            gameData.sounds.audioElements[name] = audio;
+        }
+    }
+
+    // Play sound effect
+    function playSoundEffect(soundName, volume = 0.7, allowMultiple = false) {
+        if (!gameData.sounds.enabled) return;
         
-        const sound = soundEffects[soundName];
-        if (!sound) return;
+        // Check if we should play multiple instances
+        if (!allowMultiple && gameData.sounds.playedSounds.has(soundName)) {
+            return;
+        }
+        
+        const audio = gameData.sounds.audioElements[soundName];
+        if (!audio) {
+            console.warn(`Sound not found: ${soundName}`);
+            return;
+        }
         
         try {
-            const volume = customVolume !== null ? customVolume : sound.volume;
+            // Reset audio if it's already playing
+            audio.currentTime = 0;
+            audio.volume = volume;
             
-            if (sound.type === 'tone') {
-                playTone(sound, volume);
-            } else if (sound.type === 'noise') {
-                playNoise(sound, volume);
+            // Play the sound
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Audio play failed:", error);
+                });
             }
+            
+            // Track played sound
+            gameData.sounds.playedSounds.add(soundName);
+            
+            // Clear from set after sound duration
+            setTimeout(() => {
+                gameData.sounds.playedSounds.delete(soundName);
+            }, 2000);
+            
         } catch (e) {
             console.log("Sound error:", e);
         }
     }
 
-    // Play a tone
-    function playTone(sound, volume) {
-        const audioContext = gameData.sounds.audioContext;
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        // Set oscillator type
-        oscillator.type = 'sine';
-        
-        // Handle frequency array (for arpeggios) or single frequency
-        if (Array.isArray(sound.frequency)) {
-            const now = audioContext.currentTime;
-            let currentTime = now;
-            
-            // Set initial frequency
-            oscillator.frequency.setValueAtTime(sound.frequency[0], now);
-            
-            // Create frequency changes
-            const segmentDuration = sound.duration / sound.frequency.length;
-            
-            for (let i = 1; i < sound.frequency.length; i++) {
-                currentTime += segmentDuration;
-                oscillator.frequency.exponentialRampToValueAtTime(sound.frequency[i], currentTime);
-            }
-        } else {
-            oscillator.frequency.value = sound.frequency || 440;
-        }
-        
-        // Set volume envelope
-        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + sound.duration);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + sound.duration);
-    }
-
-    // Play noise (explosion/hit sounds)
-    function playNoise(sound, volume) {
-        const audioContext = gameData.sounds.audioContext;
-        const bufferSize = audioContext.sampleRate * sound.duration;
-        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-        const output = buffer.getChannelData(0);
-        
-        // Fill buffer with noise
-        for (let i = 0; i < bufferSize; i++) {
-            output[i] = Math.random() * 2 - 1;
-        }
-        
-        const noiseSource = audioContext.createBufferSource();
-        const gainNode = audioContext.createGain();
-        
-        noiseSource.buffer = buffer;
-        noiseSource.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        // Set volume envelope
-        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + sound.duration);
-        
-        noiseSource.start();
-        noiseSource.stop(audioContext.currentTime + sound.duration);
-    }
-
-    // Play random cringe sound
-    function playRandomCringeSound() {
+    // Play random game sound
+    function playRandomGameSound() {
         if (!gameData.battle.gameActive || gameData.battle.showPopup || gameData.battle.isSpawning) return;
         
-        const cringeSounds = ['awkwardCough', 'ahemSound', 'cringeLaugh', 'bruhSound'];
-        const randomSound = cringeSounds[Math.floor(Math.random() * cringeSounds.length)];
+        const gameSounds = ['Burp', 'Rubber Duck', 'Crickets', 'Alert'];
+        const randomSound = gameSounds[Math.floor(Math.random() * gameSounds.length)];
         
-        if (Math.random() < 0.3) { // 30% chance
-            playSound(randomSound);
+        if (Math.random() < 0.2) { // 20% chance
+            playSoundEffect(randomSound, 0.3, true);
+        }
+    }
+
+    // Play teacher spawn sound
+    function playTeacherSpawnSound(teacherName) {
+        if (!gameData.sounds.enabled) return;
+        
+        if (teacherName === "MODI" || teacherName === "PUNIT") {
+            playSoundEffect('Wow', 0.8);
+        } else if (teacherName === "SREELEKHA") {
+            playSoundEffect('Goat Scream', 0.7);
+        } else if (teacherName === "RN") {
+            playSoundEffect('RNintro', 0.8);
+        }
+    }
+
+    // Play match start sound
+    function playMatchStartSound() {
+        if (!gameData.sounds.enabled) return;
+        playSoundEffect('Taco Bell', 0.8);
+    }
+
+    // Play student death sound
+    function playStudentDeathSound() {
+        if (!gameData.sounds.enabled) return;
+        playSoundEffect('GTA 5 Wasted', 0.9);
+    }
+
+    // Play teacher death sound
+    function playTeacherDeathSound(teacherName) {
+        if (!gameData.sounds.enabled) return;
+        
+        if (teacherName === "SREELEKHA") {
+            playSoundEffect('No God Please No', 0.8);
+        } else {
+            playSoundEffect('Ohhhhhhhhhh', 0.7);
         }
     }
 
@@ -1974,7 +1970,7 @@
         document.getElementById('sound-btn').textContent = gameData.sounds.enabled ? '🔊' : '🔇';
         
         if (gameData.sounds.enabled) {
-            playSound('tiktokDing');
+            playSoundEffect('Alert', 0.3);
         }
     }
 
@@ -1982,7 +1978,7 @@
     function toggleMusic() {
         gameData.sounds.musicEnabled = !gameData.sounds.musicEnabled;
         document.getElementById('music-btn').textContent = gameData.sounds.musicEnabled ? '🎵' : '🔇';
-        playSound('sheesh');
+        playSoundEffect('Alert', 0.3);
     }
 
     // Toggle controls menu
@@ -1993,7 +1989,7 @@
         content.classList.toggle('expanded');
         arrow.textContent = content.classList.contains('expanded') ? '▲' : '▼';
         
-        playSound('tiktokDing');
+        playSoundEffect('Alert', 0.3);
     }
 
     // Load students
@@ -2092,7 +2088,7 @@
             <span style="display: block; font-size: 0.9rem; color: #94a3b8; margin-top: 5px;">Ready for battle</span>
         `;
         
-        playSound('tiktokDing');
+        playSoundEffect('Alert', 0.3);
     }
 
     // Switch screens
@@ -2118,7 +2114,7 @@
         // Reset keys
         gameData.battle.keysPressed = {};
         
-        playSound('bellRing');
+        playSoundEffect('Alert', 0.3);
     }
 
     // Start battle
@@ -2129,7 +2125,7 @@
         }
         
         showScreen('battle-screen');
-        playSound('memeBoom');
+        playSoundEffect('Inception', 0.6);
     }
 
     // Initialize battle
@@ -2162,6 +2158,9 @@
             teacherLastWalkUpdate: 0
         };
         
+        // Reset sound states
+        gameData.sounds.playedSounds.clear();
+        
         // Reset teacher cooldowns
         gameData.teachers.forEach(teacher => {
             teacher.lastSpecial = 0;
@@ -2188,8 +2187,8 @@
         updateBattleUI();
         updateHealthBars();
         
-        // Play battle start sound
-        playSound('vineBoom');
+        // Play match start sound
+        playMatchStartSound();
         
         // Show teacher popup for first teacher
         setTimeout(() => {
@@ -2207,6 +2206,9 @@
         gameData.currentTeacher = availableTeachers[randomIndex];
         
         document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
+        
+        // Play teacher spawn sound
+        playTeacherSpawnSound(gameData.currentTeacher.name);
         
         // Preload teacher sprite images if teacher uses sprites
         if (gameData.currentTeacher.useSprite) {
@@ -2358,7 +2360,7 @@
         popup.style.display = 'block';
         
         // Play teacher entrance sound
-        playSound('ahemSound');
+        playSoundEffect('Alert', 0.5);
         
         // Auto-close after 5 seconds
         setTimeout(() => {
@@ -2378,7 +2380,7 @@
         gameData.battle.gameActive = true;
         
         // Play resume sound
-        playSound('bellRing');
+        playSoundEffect('Alert', 0.3);
     }
 
     // Update battle UI
@@ -2482,8 +2484,24 @@
         // Show notification
         showSpecialAttackNotification(teacher.name + " uses " + getSpecialAttackName(teacher.specialAttack) + "!");
         
-        // Play special attack sound
-        playSound(teacher.specialAttack);
+        // Play special attack sound based on teacher
+        switch(teacher.specialAttack) {
+            case 'demonetization':
+                playSoundEffect('Alert', 0.6);
+                break;
+            case 'parentMeeting':
+                playSoundEffect('Crowd Laughing', 0.5);
+                break;
+            case 'attendance':
+                playSoundEffect('Alert', 0.7);
+                break;
+            case 'surpriseTest':
+                playSoundEffect('Inception', 0.5);
+                break;
+            case 'birthdayParty':
+                playSoundEffect('Ohhhhhhhhhh', 0.6);
+                break;
+        }
         
         // For teachers with sprites, show hit sprite briefly
         if (teacher.useSprite && teacher.sprite) {
@@ -2557,7 +2575,7 @@
                        `-${scoreLost} Score`);
         
         // Play cringe sound
-        playSound('cringeLaugh');
+        playSoundEffect('Burp', 0.5);
         
         // Remove effect
         setTimeout(() => {
@@ -2618,7 +2636,7 @@
         
         // Play annoying sound repeatedly
         const attendanceSound = setInterval(() => {
-            playSound('attendance');
+            playSoundEffect('Alert', 0.4, true);
         }, 500);
         
         // Restore after 3 seconds
@@ -2651,7 +2669,7 @@
                 if (distance < 100) {
                     gameData.battle.studentHealth -= 15;
                     updateHealthBars();
-                    playSound('damage');
+                    playSoundEffect('Alert', 0.5);
                 }
                 
                 testEffect.remove();
@@ -2685,7 +2703,7 @@
         }
         
         // Play birthday sound
-        playSound('birthdayParty');
+        playSoundEffect('Ohhhhhhhhhh', 0.6);
     }
 
     // Update special attack UI
@@ -2775,7 +2793,7 @@
                     if (distance < 44) { // Student radius
                         gameData.battle.studentHealth -= 5;
                         updateHealthBars();
-                        playSound('hit');
+                        playSoundEffect('Alert', 0.4);
                         
                         // Remove ghost on hit
                         effect.element.remove();
@@ -2877,7 +2895,7 @@
             velocityX, velocityY, 'student', 10, false
         );
         
-        playSound('shoot');
+        playSoundEffect('Alert', 0.3);
     }
 
     // Special attack with cooldown
@@ -2899,7 +2917,7 @@
         gameData.battle.specialCooldown = gameData.battle.specialMaxCooldown;
         
         updateSpecialUI();
-        playSound('special');
+        playSoundEffect('Heavenly Sound', 0.5);
     }
 
     // Teacher attack
@@ -2919,7 +2937,7 @@
             velocityX, velocityY, 'teacher', 8, false
         );
         
-        playSound('shoot', 0.1);
+        playSoundEffect('Alert', 0.2, true);
     }
 
     // Create projectile
@@ -3007,7 +3025,7 @@
                 gameData.battle.projectiles.splice(i, 1);
                 
                 // Play hit sound
-                playSound('hit');
+                playSoundEffect('Alert', 0.4, true);
                 
                 updateHealthBars();
                 updateBattleUI();
@@ -3065,7 +3083,7 @@
             
             // Play collision sound
             if (Math.random() < 0.3) {
-                playSound('oops');
+                playSoundEffect('Burp', 0.3, true);
             }
         }
     }
@@ -3078,9 +3096,8 @@
         gameData.battle.totalScore += 1000;
         gameData.battle.currentRound++;
         
-        // Play victory sound
-        playSound('heal');
-        playSound('cringeLaugh');
+        // Play teacher death sound
+        playTeacherDeathSound(gameData.currentTeacher.name);
         
         // Show spawn screen
         const spawnScreen = document.getElementById('next-teacher-spawn');
@@ -3196,9 +3213,10 @@
         
         // Play end game sound
         if (winner === 'student') {
-            playSound('special');
+            playSoundEffect('Heavenly Sound', 0.8);
+            playSoundEffect('Crowd Laughing', 0.5);
         } else {
-            playSound('damage');
+            playStudentDeathSound(); // Play GTA 5 Wasted when student dies
         }
         
         // Update high scores if student won and score is high enough
@@ -3229,7 +3247,7 @@
         setTimeout(() => {
             initializeBattle();
         }, 100);
-        playSound('bellRing');
+        playSoundEffect('Alert', 0.3);
     }
 </script>
 </body>
