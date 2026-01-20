@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -473,7 +474,7 @@
             border-color: #00d4ff;
         }
 
-        /* Battle Screen - Modern Arena */
+        /* Battle Screen - Modern Arena - MOBILE OPTIMIZED */
         #battle-screen {
             background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
             overflow: hidden;
@@ -485,8 +486,8 @@
             align-items: center;
             width: 100%;
             max-width: 1000px;
-            margin: 0 auto 20px;
-            padding: 20px;
+            margin: 10px auto;
+            padding: 15px;
             flex-wrap: wrap;
             background: rgba(15, 23, 42, 0.8);
             border-radius: 16px;
@@ -498,12 +499,12 @@
             flex-direction: column;
             align-items: center;
             width: 45%;
-            min-width: 180px;
+            min-width: 140px;
         }
 
         .player-name {
             font-size: 1.3rem;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             text-align: center;
             font-weight: 700;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -520,7 +521,7 @@
         .health-container {
             width: 100%;
             background: rgba(30, 41, 59, 0.8);
-            height: 20px;
+            height: 18px;
             border-radius: 10px;
             position: relative;
             overflow: hidden;
@@ -541,7 +542,7 @@
         }
 
         .health-text {
-            margin-top: 8px;
+            margin-top: 6px;
             font-size: 0.9rem;
             font-weight: 600;
             color: #cbd5e1;
@@ -557,20 +558,91 @@
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
-        /* Battle Arena */
+        /* Battle Arena - MOBILE OPTIMIZED */
         .battle-arena {
             width: 100%;
             max-width: 1000px;
-            height: clamp(300px, 60vh, 500px);
+            height: clamp(400px, 65vh, 600px);
             background: rgba(10, 10, 15, 0.9);
             position: relative;
-            margin: 20px auto;
+            margin: 10px auto;
             border-radius: 20px;
             overflow: hidden;
             border: 2px solid rgba(0, 212, 255, 0.3);
             box-shadow: 
                 inset 0 0 50px rgba(0, 0, 0, 0.5),
                 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Battle Stats - MOBILE OPTIMIZED */
+        .battle-stats {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            min-width: 120px;
+            max-width: 150px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            color: #8ab4f8;
+            font-size: 0.85rem;
+        }
+
+        .stat-value {
+            color: #00d4ff;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Special Attack Status - MOBILE OPTIMIZED */
+        .special-status {
+            position: fixed;
+            bottom: 220px; /* Adjusted for mobile controls */
+            left: 10px;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            min-width: 150px;
+            max-width: 180px;
+        }
+
+        .special-ready {
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .special-cooldown-battle {
+            color: #ff4444;
+            font-weight: 600;
+        }
+
+        .cooldown-bar-battle {
+            width: 100%;
+            height: 10px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .cooldown-fill-battle {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            border-radius: 4px;
+            transition: width 0.1s linear;
         }
 
         /* Teacher Sprite Container */
@@ -581,7 +653,7 @@
             transition: transform 0.1s ease;
         }
 
-        /* Character Squares - Modern Style */
+        /* Character Squares - MOBILE OPTIMIZED */
         .character-square {
             position: absolute;
             transition: transform 0.1s ease;
@@ -592,8 +664,8 @@
         }
 
         .student-square {
-            width: 88px;
-            height: 88px;
+            width: 70px;
+            height: 70px;
             border-radius: 16px;
             background-size: cover;
             background-position: center;
@@ -603,8 +675,8 @@
         }
 
         .teacher-square {
-            width: 70px;
-            height: 70px;
+            width: 55px;
+            height: 55px;
             border-radius: 16px;
             background-size: cover;
             background-position: center;
@@ -664,75 +736,6 @@
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0) scale(1); }
             100% { opacity: 0; transform: translateY(-50px) scale(1.2); }
-        }
-
-        /* Battle Stats */
-        .battle-stats {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(15, 23, 42, 0.9);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            min-width: 150px;
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            color: #8ab4f8;
-            font-size: 0.9rem;
-        }
-
-        .stat-value {
-            color: #00d4ff;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        /* Special Attack Status */
-        .special-status {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(15, 23, 42, 0.9);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            min-width: 180px;
-        }
-
-        .special-ready {
-            color: #00ff88;
-            font-weight: 600;
-        }
-
-        .special-cooldown-battle {
-            color: #ff4444;
-            font-weight: 600;
-        }
-
-        .cooldown-bar-battle {
-            width: 100%;
-            height: 10px;
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 5px;
-            margin-top: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(100, 116, 139, 0.3);
-        }
-
-        .cooldown-fill-battle {
-            height: 100%;
-            background: linear-gradient(90deg, #ffd700, #ffaa00);
-            border-radius: 4px;
-            transition: width 0.1s linear;
         }
 
         /* Teacher Comic Popup */
@@ -1007,16 +1010,17 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* Modern Mobile Controls */
+        /* Modern Mobile Controls - OPTIMIZED FOR MOBILE */
         .mobile-controls {
             display: none;
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 20px;
+            padding: 15px;
             z-index: 1000;
             pointer-events: none;
+            background: linear-gradient(transparent, rgba(10, 25, 41, 0.8));
         }
 
         .mobile-controls.active {
@@ -1026,166 +1030,132 @@
         .mobile-controls-container {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end;
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
             pointer-events: auto;
         }
 
-        /* Left Control Pad - Movement */
+        /* Left Control Pad - Optimized for Mobile */
         .control-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 12px;
-            width: 180px;
-            height: 180px;
+            gap: 10px;
+            width: 150px;
+            height: 150px;
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 15px;
             border: 2px solid rgba(0, 212, 255, 0.3);
             box-shadow: 
-                0 10px 40px rgba(0, 0, 0, 0.4),
+                0 8px 30px rgba(0, 0, 0, 0.4),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         .pad-btn {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 136, 255, 0.1));
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 136, 255, 0.15));
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             position: relative;
             overflow: hidden;
             color: #00d4ff;
-            font-size: 24px;
+            font-size: 20px;
             user-select: none;
             -webkit-user-select: none;
+            touch-action: manipulation;
         }
 
         .pad-btn:active {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 136, 255, 0.25));
-            transform: scale(0.95);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.4), rgba(0, 136, 255, 0.35));
+            transform: scale(0.92);
             box-shadow: 
-                inset 0 2px 10px rgba(0, 212, 255, 0.3),
-                0 0 20px rgba(0, 212, 255, 0.4);
-        }
-
-        .pad-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.1) 50%, 
-                transparent 100%);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .pad-btn:active::before {
-            opacity: 1;
+                inset 0 2px 8px rgba(0, 212, 255, 0.4),
+                0 0 15px rgba(0, 212, 255, 0.5);
         }
 
         .pad-center {
             grid-column: 2;
             grid-row: 2;
-            background: rgba(0, 212, 255, 0.1);
-            border-color: rgba(0, 212, 255, 0.2);
+            background: rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.3);
         }
 
         .pad-center:active {
             background: rgba(0, 212, 255, 0.2);
         }
 
-        /* Right Action Buttons */
+        /* Right Action Buttons - Optimized */
         .action-buttons-right {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
+            margin-bottom: 10px;
         }
 
         .action-btn-circle {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             position: relative;
             overflow: hidden;
             user-select: none;
             -webkit-user-select: none;
+            touch-action: manipulation;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 1px;
             text-align: center;
             line-height: 1.2;
-        }
-
-        .action-btn-circle::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.2) 50%, 
-                transparent 100%);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .action-btn-circle:active::before {
-            opacity: 1;
+            padding: 5px;
         }
 
         .fire-btn {
             background: linear-gradient(135deg, #ff4757, #ff3838);
-            border: 3px solid rgba(255, 71, 87, 0.4);
+            border: 3px solid rgba(255, 71, 87, 0.5);
             color: white;
             box-shadow: 
-                0 8px 25px rgba(255, 71, 87, 0.4),
+                0 6px 20px rgba(255, 71, 87, 0.5),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
 
         .fire-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.92);
             background: linear-gradient(135deg, #ff3838, #ff1e1e);
             box-shadow: 
-                inset 0 2px 10px rgba(255, 71, 87, 0.4),
-                0 0 30px rgba(255, 71, 87, 0.6);
+                inset 0 2px 8px rgba(255, 71, 87, 0.5),
+                0 0 25px rgba(255, 71, 87, 0.7);
         }
 
         .special-btn {
             background: linear-gradient(135deg, #ffd700, #ffaa00);
-            border: 3px solid rgba(255, 215, 0, 0.4);
+            border: 3px solid rgba(255, 215, 0, 0.5);
             color: #1a1a2e;
             box-shadow: 
-                0 8px 25px rgba(255, 215, 0, 0.4),
+                0 6px 20px rgba(255, 215, 0, 0.5),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
 
         .special-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.92);
             background: linear-gradient(135deg, #ffaa00, #ff9500);
             box-shadow: 
-                inset 0 2px 10px rgba(255, 215, 0, 0.4),
-                0 0 30px rgba(255, 215, 0, 0.6);
+                inset 0 2px 8px rgba(255, 215, 0, 0.5),
+                0 0 25px rgba(255, 215, 0, 0.7);
         }
 
         .special-btn.cooldown {
@@ -1226,13 +1196,17 @@
             left: 50%;
             transform: translateX(-50%);
             color: #00d4ff;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.7;
+            letter-spacing: 1px;
+            opacity: 0.8;
             white-space: nowrap;
             pointer-events: none;
+            background: rgba(15, 23, 42, 0.7);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 5px;
         }
 
         /* Results Screen */
@@ -1316,10 +1290,10 @@
             box-shadow: 0 6px 25px rgba(0, 212, 255, 0.4);
         }
 
-        /* Responsive Design */
+        /* Responsive Design - MOBILE OPTIMIZED */
         @media (max-width: 768px) {
             .content-container {
-                padding: 15px;
+                padding: 10px !important;
             }
             
             .dashboard-container {
@@ -1337,8 +1311,8 @@
             
             .battle-header {
                 flex-direction: column;
-                gap: 15px;
-                padding: 15px;
+                gap: 10px;
+                padding: 10px;
             }
             
             .player-info {
@@ -1348,21 +1322,60 @@
             .versus {
                 width: 100%;
                 order: -1;
+                margin-bottom: 5px;
             }
             
-            .character-square {
-                width: 60px;
-                height: 60px;
+            .player-name {
+                font-size: 1.1rem;
+                margin-bottom: 8px;
+            }
+            
+            .health-container {
+                height: 16px;
+            }
+            
+            .health-text {
+                font-size: 0.8rem;
+                margin-top: 4px;
+            }
+            
+            .battle-arena {
+                height: 65vh !important;
+                min-height: 400px;
+                margin: 5px auto !important;
             }
             
             .student-square {
-                width: 75px;
-                height: 75px;
+                width: 60px;
+                height: 60px;
             }
             
             .teacher-square {
-                width: 60px;
-                height: 60px;
+                width: 48px;
+                height: 48px;
+            }
+            
+            .battle-stats {
+                top: 70px;
+                right: 10px;
+                padding: 10px;
+                min-width: 100px;
+            }
+            
+            .stat-item {
+                font-size: 0.75rem;
+                margin-bottom: 4px;
+            }
+            
+            .stat-value {
+                font-size: 0.9rem;
+            }
+            
+            .special-status {
+                bottom: 200px;
+                left: 10px;
+                padding: 10px;
+                min-width: 130px;
             }
             
             .teacher-popup {
@@ -1388,18 +1401,6 @@
                 display: block;
             }
             
-            .battle-stats,
-            .special-status {
-                position: relative;
-                top: auto;
-                right: auto;
-                bottom: auto;
-                left: auto;
-                margin: 10px auto;
-                width: calc(100% - 40px);
-                max-width: 400px;
-            }
-            
             .action-buttons,
             .result-buttons {
                 flex-direction: column;
@@ -1413,19 +1414,25 @@
             }
             
             .sound-controls {
-                bottom: 100px;
+                bottom: 180px;
                 right: 15px;
             }
             
             .control-pad {
-                width: 160px;
-                height: 160px;
-                padding: 15px;
+                width: 130px;
+                height: 130px;
+                padding: 12px;
+                gap: 8px;
+            }
+            
+            .pad-btn {
+                font-size: 18px;
+                border-radius: 12px;
             }
             
             .action-btn-circle {
-                width: 70px;
-                height: 70px;
+                width: 65px;
+                height: 65px;
                 font-size: 12px;
             }
             
@@ -1434,11 +1441,38 @@
                 height: 20px;
                 font-size: 10px;
             }
+            
+            /* Hide desktop quit button on mobile */
+            #battle-screen .action-btn.back-btn:not(.mobile-quit) {
+                display: none;
+            }
+            
+            /* Mobile quit button */
+            .mobile-quit-btn {
+                position: fixed !important;
+                top: 10px !important;
+                left: 10px !important;
+                width: auto !important;
+                padding: 10px 15px !important;
+                font-size: 0.9rem !important;
+                background: rgba(255, 71, 87, 0.2) !important;
+                border: 1px solid rgba(255, 71, 87, 0.3) !important;
+                color: #ff6b9d !important;
+                z-index: 100 !important;
+                backdrop-filter: blur(10px) !important;
+                max-width: none !important;
+                border-radius: 10px !important;
+            }
+            
+            .mobile-quit-btn:active {
+                background: rgba(255, 71, 87, 0.4) !important;
+                transform: scale(0.95) !important;
+            }
         }
 
         @media (max-width: 480px) {
             .content-container {
-                padding: 10px;
+                padding: 8px !important;
             }
             
             .characters-container {
@@ -1455,17 +1489,18 @@
             }
             
             .battle-arena {
-                height: 300px;
+                height: 60vh !important;
+                min-height: 350px;
             }
             
             .student-square {
-                width: 60px;
-                height: 60px;
+                width: 50px;
+                height: 50px;
             }
             
             .teacher-square {
-                width: 48px;
-                height: 48px;
+                width: 40px;
+                height: 40px;
             }
             
             .teacher-popup {
@@ -1479,49 +1514,144 @@
             }
             
             .control-pad {
-                width: 140px;
-                height: 140px;
-                padding: 12px;
-                gap: 10px;
+                width: 120px;
+                height: 120px;
+                padding: 10px;
+                gap: 6px;
             }
             
             .pad-btn {
-                font-size: 20px;
-                border-radius: 14px;
-            }
-            
-            .action-btn-circle {
-                width: 65px;
-                height: 65px;
-                font-size: 11px;
-            }
-            
-            .mobile-controls {
-                padding: 15px;
-            }
-        }
-
-        @media (max-height: 700px) {
-            .mobile-controls {
-                padding: 15px;
-            }
-            
-            .control-pad {
-                width: 130px;
-                height: 130px;
+                font-size: 16px;
+                border-radius: 10px;
             }
             
             .action-btn-circle {
                 width: 60px;
                 height: 60px;
-                font-size: 10px;
+                font-size: 11px;
+            }
+            
+            .mobile-controls {
+                padding: 12px;
+            }
+            
+            .controls-label {
+                font-size: 8px;
+                padding: 1px 4px;
             }
         }
 
-        /* Prevent text selection on mobile buttons */
+        @media (max-height: 700px) {
+            .battle-arena {
+                height: 55vh !important;
+                min-height: 300px;
+            }
+            
+            .mobile-controls {
+                padding: 10px;
+            }
+            
+            .control-pad {
+                width: 110px;
+                height: 110px;
+            }
+            
+            .action-btn-circle {
+                width: 55px;
+                height: 55px;
+                font-size: 10px;
+            }
+            
+            .special-status {
+                bottom: 160px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .battle-arena {
+                height: 50vh !important;
+                min-height: 250px;
+            }
+            
+            .mobile-controls {
+                padding: 8px;
+            }
+            
+            .control-pad {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .pad-btn {
+                font-size: 14px;
+            }
+            
+            .action-btn-circle {
+                width: 50px;
+                height: 50px;
+                font-size: 9px;
+            }
+            
+            .special-status {
+                bottom: 140px;
+                padding: 6px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Landscape Mode Optimization */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .battle-arena {
+                height: 75vh !important;
+                margin: 5px auto;
+            }
+            
+            .mobile-controls {
+                padding: 8px 15px;
+            }
+            
+            .mobile-controls-container {
+                align-items: center;
+            }
+            
+            .control-pad {
+                width: 100px;
+                height: 100px;
+                padding: 10px;
+            }
+            
+            .action-buttons-right {
+                flex-direction: row;
+                gap: 20px;
+                margin-bottom: 0;
+            }
+            
+            .special-status {
+                bottom: 120px;
+            }
+            
+            .battle-stats {
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Prevent default touch behaviors */
         .pad-btn, .action-btn-circle {
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
+            touch-action: manipulation;
+        }
+
+        /* Smooth animations */
+        @keyframes buttonPress {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.92); }
+            100% { transform: scale(1); }
+        }
+
+        .pad-btn:active, .action-btn-circle:active {
+            animation: buttonPress 0.2s ease-out;
         }
     </style>
 </head>
@@ -1747,52 +1877,61 @@
                         <div class="pad-btn" 
                              ontouchstart="moveStudent('up-left')" 
                              ontouchend="stopMoveStudent()"
+                             ontouchcancel="stopMoveStudent()"
                              style="grid-column: 1; grid-row: 1;">
                             ↖
                         </div>
                         <div class="pad-btn" 
                              ontouchstart="moveStudent('up')" 
                              ontouchend="stopMoveStudent()"
+                             ontouchcancel="stopMoveStudent()"
                              style="grid-column: 2; grid-row: 1;">
                             ↑
                         </div>
                         <div class="pad-btn" 
                              ontouchstart="moveStudent('up-right')" 
                              ontouchend="stopMoveStudent()"
+                             ontouchcancel="stopMoveStudent()"
                              style="grid-column: 3; grid-row: 1;">
                             ↗
                         </div>
                         <div class="pad-btn" 
                              ontouchstart="moveStudent('left')" 
                              ontouchend="stopMoveStudent()"
+                             ontouchcancel="stopMoveStudent()"
                              style="grid-column: 1; grid-row: 2;">
                             ←
                         </div>
                         <div class="pad-center pad-btn" 
-                             ontouchend="stopMoveStudent()">
+                             ontouchend="stopMoveStudent()"
+                             ontouchcancel="stopMoveStudent()">
                             ●
                         </div>
                         <div class="pad-btn" 
                              ontouchstart="moveStudent('right')" 
                              ontouchend="stopMoveStudent()"
+                             ontouchcancel="stopMoveStudent()"
                              style="grid-column: 3; grid-row: 2;">
                             →
                         </div>
                         <div class="pad-btn" 
                              ontouchstart="moveStudent('down-left')" 
                              ontouchend="stopMoveStudent()"
+                             ontouchcancel="stopMoveStudent()"
                              style="grid-column: 1; grid-row: 3;">
                             ↙
                         </div>
                         <div class="pad-btn" 
                              ontouchstart="moveStudent('down')" 
                              ontouchend="stopMoveStudent()"
+                             ontouchcancel="stopMoveStudent()"
                              style="grid-column: 2; grid-row: 3;">
                             ↓
                         </div>
                         <div class="pad-btn" 
                              ontouchstart="moveStudent('down-right')" 
                              ontouchend="stopMoveStudent()"
+                             ontouchcancel="stopMoveStudent()"
                              style="grid-column: 3; grid-row: 3;">
                             ↘
                         </div>
@@ -1800,15 +1939,18 @@
                     
                     <!-- Right Action Buttons -->
                     <div class="action-buttons-right">
-                        <div class="controls-label">ACTIONS</div>
                         <div class="action-btn-circle fire-btn" 
-                             ontouchstart="shootProjectile()">
+                             ontouchstart="shootProjectile()"
+                             ontouchend=""
+                             ontouchcancel="">
                             FIRE
                             <div class="controls-label">RAPID FIRE</div>
                         </div>
                         <div class="action-btn-circle special-btn" 
                              id="mobile-special-btn"
-                             ontouchstart="mobileSpecialAttack()">
+                             ontouchstart="mobileSpecialAttack()"
+                             ontouchend=""
+                             ontouchcancel="">
                             SPECIAL
                             <div id="mobile-special-indicator" class="special-indicator" style="display: none;">!</div>
                             <div class="controls-label" id="mobile-special-label">READY</div>
@@ -1817,7 +1959,13 @@
                 </div>
             </div>
             
-            <div style="text-align: center; margin-top: 30px;">
+            <!-- Mobile Quit Button -->
+            <button class="action-btn back-btn mobile-quit-btn" onclick="showScreen('dashboard-screen')">
+                QUIT
+            </button>
+            
+            <!-- Desktop Quit Button (Hidden on Mobile) -->
+            <div style="text-align: center; margin-top: 30px; display: none;">
                 <button class="action-btn back-btn" onclick="showScreen('dashboard-screen')" style="max-width: 200px;">
                     QUIT BATTLE
                 </button>
@@ -2973,8 +3121,8 @@
         arena.appendChild(effect);
         
         // Show score loss
-        showDamageNumber(gameData.battle.studentPosition.x + 44, 
-                       gameData.battle.studentPosition.y + 44, 
+        showDamageNumber(gameData.battle.studentPosition.x + 35, 
+                       gameData.battle.studentPosition.y + 35, 
                        `-${scoreLost} Score`);
         
         // Play cringe sound (if RNintro isn't playing)
@@ -3275,9 +3423,9 @@
             const arenaRect = arena.getBoundingClientRect();
             
             gameData.battle.studentPosition.x = Math.max(0, 
-                Math.min(arenaRect.width - 88, gameData.battle.studentPosition.x));
+                Math.min(arenaRect.width - (window.innerWidth <= 768 ? 60 : 88), gameData.battle.studentPosition.x));
             gameData.battle.studentPosition.y = Math.max(0, 
-                Math.min(arenaRect.height - 88, gameData.battle.studentPosition.y));
+                Math.min(arenaRect.height - (window.innerWidth <= 768 ? 60 : 88), gameData.battle.studentPosition.y));
         }
         
         // Update active effects (parent ghosts)
@@ -3397,8 +3545,8 @@
         const velocityY = (dy / distance) * 8;
         
         createProjectile(
-            gameData.battle.studentPosition.x + 44, // Center of 88px square
-            gameData.battle.studentPosition.y + 44,
+            gameData.battle.studentPosition.x + (window.innerWidth <= 768 ? 30 : 44),
+            gameData.battle.studentPosition.y + (window.innerWidth <= 768 ? 30 : 44),
             velocityX, velocityY, 'student', 10, false
         );
         
@@ -3416,8 +3564,8 @@
         for (let i = -2; i <= 2; i++) {
             const angle = i * 0.4;
             createProjectile(
-                gameData.battle.studentPosition.x + 44, // Center of 88px square
-                gameData.battle.studentPosition.y + 44,
+                gameData.battle.studentPosition.x + (window.innerWidth <= 768 ? 30 : 44),
+                gameData.battle.studentPosition.y + (window.innerWidth <= 768 ? 30 : 44),
                 Math.cos(angle) * 10, Math.sin(angle) * 10, 'student', 20, true
             );
         }
@@ -3447,8 +3595,8 @@
         const velocityY = (dy / distance) * 6;
         
         createProjectile(
-            gameData.battle.teacherPosition.x + 35, // Center of 70px square
-            gameData.battle.teacherPosition.y + 35,
+            gameData.battle.teacherPosition.x + (window.innerWidth <= 768 ? 28 : 35),
+            gameData.battle.teacherPosition.y + (window.innerWidth <= 768 ? 28 : 35),
             velocityX, velocityY, 'teacher', 8, false
         );
         
@@ -3509,10 +3657,11 @@
             const targetPos = proj.type === 'student' ? 
                 gameData.battle.teacherPosition : gameData.battle.studentPosition;
             
-            const targetRadius = proj.type === 'student' ? 35 : 44;
+            const targetRadius = proj.type === 'student' ? (window.innerWidth <= 768 ? 28 : 35) : (window.innerWidth <= 768 ? 30 : 44);
+            const targetCenter = proj.type === 'student' ? (window.innerWidth <= 768 ? 28 : 35) : (window.innerWidth <= 768 ? 30 : 44);
             
-            const dx = proj.x - (targetPos.x + (proj.type === 'student' ? 35 : 44));
-            const dy = proj.y - (targetPos.y + (proj.type === 'student' ? 35 : 44));
+            const dx = proj.x - (targetPos.x + targetCenter);
+            const dy = proj.y - (targetPos.y + targetCenter);
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance < targetRadius) {
@@ -3533,8 +3682,8 @@
                 }
                 
                 // Show damage number
-                showDamageNumber(targetPos.x + (proj.type === 'student' ? 35 : 44), 
-                               targetPos.y + (proj.type === 'student' ? 35 : 44), 
+                showDamageNumber(targetPos.x + targetCenter, 
+                               targetPos.y + targetCenter, 
                                proj.damage);
                 
                 // Remove projectile
@@ -3583,12 +3732,15 @@
 
     // Check collisions
     function checkCollisions() {
+        const studentRadius = window.innerWidth <= 768 ? 30 : 44;
+        const teacherRadius = window.innerWidth <= 768 ? 28 : 35;
+        
         const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
         const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        // Student is 44px radius, teacher is 35px radius
-        if (distance < 79) { // 44 + 35 = 79
+        // Collision detection
+        if (distance < (studentRadius + teacherRadius)) {
             // Push apart
             const push = 5;
             gameData.battle.studentPosition.x += (dx / distance) * push;
@@ -3659,9 +3811,9 @@
         const arenaRect = arena.getBoundingClientRect();
         
         gameData.battle.studentPosition.x = 50;
-        gameData.battle.studentPosition.y = arenaRect.height / 2 - 44;
+        gameData.battle.studentPosition.y = arenaRect.height / 2 - (window.innerWidth <= 768 ? 30 : 44);
         gameData.battle.teacherPosition.x = arenaRect.width - 120;
-        gameData.battle.teacherPosition.y = arenaRect.height / 2 - 35;
+        gameData.battle.teacherPosition.y = arenaRect.height / 2 - (window.innerWidth <= 768 ? 28 : 35);
         
         // Reset teacher health (increase with rounds)
         gameData.battle.teacherHealth = 100 + (gameData.battle.currentRound - 1) * 20;
