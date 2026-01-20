@@ -1007,48 +1007,232 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* Mobile Controls */
+        /* Modern Mobile Controls */
         .mobile-controls {
             display: none;
             position: fixed;
-            bottom: 30px;
+            bottom: 0;
             left: 0;
             right: 0;
-            padding: 15px;
+            padding: 20px;
             z-index: 1000;
+            pointer-events: none;
         }
 
-        .mobile-controls-grid {
+        .mobile-controls.active {
+            display: block;
+        }
+
+        .mobile-controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            pointer-events: auto;
+        }
+
+        /* Left Control Pad - Movement */
+        .control-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            max-width: 320px;
-            margin: 0 auto;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 12px;
+            width: 180px;
+            height: 180px;
             background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
             padding: 20px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        .mobile-btn {
-            background: rgba(0, 212, 255, 0.1);
-            color: #00d4ff;
+        .pad-btn {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 136, 255, 0.1));
             border: 2px solid rgba(0, 212, 255, 0.3);
-            padding: 16px;
-            font-size: 1.3rem;
-            cursor: pointer;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
             transition: all 0.2s ease;
-            border-radius: 12px;
-            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            color: #00d4ff;
+            font-size: 24px;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        .mobile-btn:active {
-            background: rgba(0, 212, 255, 0.3);
+        .pad-btn:active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 136, 255, 0.25));
             transform: scale(0.95);
+            box-shadow: 
+                inset 0 2px 10px rgba(0, 212, 255, 0.3),
+                0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .pad-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 100%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .pad-btn:active::before {
+            opacity: 1;
+        }
+
+        .pad-center {
+            grid-column: 2;
+            grid-row: 2;
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+
+        .pad-center:active {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        /* Right Action Buttons */
+        .action-buttons-right {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .action-btn-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .action-btn-circle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                transparent 100%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .action-btn-circle:active::before {
+            opacity: 1;
+        }
+
+        .fire-btn {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            border: 3px solid rgba(255, 71, 87, 0.4);
+            color: white;
+            box-shadow: 
+                0 8px 25px rgba(255, 71, 87, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .fire-btn:active {
+            transform: scale(0.95);
+            background: linear-gradient(135deg, #ff3838, #ff1e1e);
+            box-shadow: 
+                inset 0 2px 10px rgba(255, 71, 87, 0.4),
+                0 0 30px rgba(255, 71, 87, 0.6);
+        }
+
+        .special-btn {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            border: 3px solid rgba(255, 215, 0, 0.4);
+            color: #1a1a2e;
+            box-shadow: 
+                0 8px 25px rgba(255, 215, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .special-btn:active {
+            transform: scale(0.95);
+            background: linear-gradient(135deg, #ffaa00, #ff9500);
+            box-shadow: 
+                inset 0 2px 10px rgba(255, 215, 0, 0.4),
+                0 0 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .special-btn.cooldown {
+            background: linear-gradient(135deg, #64748b, #475569);
+            border-color: rgba(100, 116, 139, 0.4);
+            color: #94a3b8;
+            pointer-events: none;
+        }
+
+        /* Special Attack Indicator */
+        .special-indicator {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 24px;
+            height: 24px;
+            background: #ff4757;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            border: 2px solid rgba(15, 23, 42, 0.95);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Mobile Controls Label */
+        .controls-label {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #00d4ff;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            white-space: nowrap;
+            pointer-events: none;
         }
 
         /* Results Screen */
@@ -1232,6 +1416,24 @@
                 bottom: 100px;
                 right: 15px;
             }
+            
+            .control-pad {
+                width: 160px;
+                height: 160px;
+                padding: 15px;
+            }
+            
+            .action-btn-circle {
+                width: 70px;
+                height: 70px;
+                font-size: 12px;
+            }
+            
+            .special-indicator {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1276,14 +1478,50 @@
                 padding: 12px;
             }
             
-            .mobile-controls-grid {
+            .control-pad {
+                width: 140px;
+                height: 140px;
+                padding: 12px;
+                gap: 10px;
+            }
+            
+            .pad-btn {
+                font-size: 20px;
+                border-radius: 14px;
+            }
+            
+            .action-btn-circle {
+                width: 65px;
+                height: 65px;
+                font-size: 11px;
+            }
+            
+            .mobile-controls {
+                padding: 15px;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .mobile-controls {
                 padding: 15px;
             }
             
-            .mobile-btn {
-                padding: 14px;
-                font-size: 1.1rem;
+            .control-pad {
+                width: 130px;
+                height: 130px;
             }
+            
+            .action-btn-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 10px;
+            }
+        }
+
+        /* Prevent text selection on mobile buttons */
+        .pad-btn, .action-btn-circle {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
         }
     </style>
 </head>
@@ -1501,15 +1739,81 @@
                 <div class="spawn-timer" id="spawn-timer">3</div>
             </div>
             
-            <!-- Mobile Controls -->
-            <div class="mobile-controls">
-                <div class="mobile-controls-grid">
-                    <button class="mobile-btn" ontouchstart="moveStudent('up')" ontouchend="stopMoveStudent()">↑</button>
-                    <button class="mobile-btn" ontouchstart="shootProjectile()">FIRE</button>
-                    <button class="mobile-btn" ontouchstart="moveStudent('right')" ontouchend="stopMoveStudent()">→</button>
-                    <button class="mobile-btn" ontouchstart="moveStudent('left')" ontouchend="stopMoveStudent()">←</button>
-                    <button class="mobile-btn" ontouchstart="specialAttack()">SPECIAL</button>
-                    <button class="mobile-btn" ontouchstart="moveStudent('down')" ontouchend="stopMoveStudent()">↓</button>
+            <!-- Modern Mobile Controls -->
+            <div class="mobile-controls" id="mobile-controls">
+                <div class="mobile-controls-container">
+                    <!-- Left Control Pad -->
+                    <div class="control-pad" id="control-pad">
+                        <div class="pad-btn" 
+                             ontouchstart="moveStudent('up-left')" 
+                             ontouchend="stopMoveStudent()"
+                             style="grid-column: 1; grid-row: 1;">
+                            ↖
+                        </div>
+                        <div class="pad-btn" 
+                             ontouchstart="moveStudent('up')" 
+                             ontouchend="stopMoveStudent()"
+                             style="grid-column: 2; grid-row: 1;">
+                            ↑
+                        </div>
+                        <div class="pad-btn" 
+                             ontouchstart="moveStudent('up-right')" 
+                             ontouchend="stopMoveStudent()"
+                             style="grid-column: 3; grid-row: 1;">
+                            ↗
+                        </div>
+                        <div class="pad-btn" 
+                             ontouchstart="moveStudent('left')" 
+                             ontouchend="stopMoveStudent()"
+                             style="grid-column: 1; grid-row: 2;">
+                            ←
+                        </div>
+                        <div class="pad-center pad-btn" 
+                             ontouchend="stopMoveStudent()">
+                            ●
+                        </div>
+                        <div class="pad-btn" 
+                             ontouchstart="moveStudent('right')" 
+                             ontouchend="stopMoveStudent()"
+                             style="grid-column: 3; grid-row: 2;">
+                            →
+                        </div>
+                        <div class="pad-btn" 
+                             ontouchstart="moveStudent('down-left')" 
+                             ontouchend="stopMoveStudent()"
+                             style="grid-column: 1; grid-row: 3;">
+                            ↙
+                        </div>
+                        <div class="pad-btn" 
+                             ontouchstart="moveStudent('down')" 
+                             ontouchend="stopMoveStudent()"
+                             style="grid-column: 2; grid-row: 3;">
+                            ↓
+                        </div>
+                        <div class="pad-btn" 
+                             ontouchstart="moveStudent('down-right')" 
+                             ontouchend="stopMoveStudent()"
+                             style="grid-column: 3; grid-row: 3;">
+                            ↘
+                        </div>
+                    </div>
+                    
+                    <!-- Right Action Buttons -->
+                    <div class="action-buttons-right">
+                        <div class="controls-label">ACTIONS</div>
+                        <div class="action-btn-circle fire-btn" 
+                             ontouchstart="shootProjectile()">
+                            FIRE
+                            <div class="controls-label">RAPID FIRE</div>
+                        </div>
+                        <div class="action-btn-circle special-btn" 
+                             id="mobile-special-btn"
+                             ontouchstart="mobileSpecialAttack()">
+                            SPECIAL
+                            <div id="mobile-special-indicator" class="special-indicator" style="display: none;">!</div>
+                            <div class="controls-label" id="mobile-special-label">READY</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -1751,14 +2055,35 @@
         selectedStudent: null,
         currentTeacher: null,
         
-        // Sound system
+        // Enhanced Sound system
         sounds: {
             enabled: true,
             musicEnabled: true,
             audioContext: null,
             audioElements: {},
             // Track which sounds have been played to avoid duplicates
-            playedSounds: new Set()
+            playedSounds: new Set(),
+            // Track currently playing sounds with priority
+            currentlyPlaying: new Set(),
+            // Priority levels: 0 = normal, 1 = important, 2 = critical (RNintro)
+            soundPriority: {
+                'RNintro': 2,
+                'GTA 5 Wasted': 1,
+                'Inception': 1,
+                'Heavenly Sound': 1,
+                'Main Audio': 0,
+                'Alert': 0,
+                'Burp': 0,
+                'Crickets': 0,
+                'Crowd Laughing': 0,
+                'Goat Scream': 0,
+                'No God Please No': 0,
+                'Oh No No No': 0,
+                'Ohhhhhhhhhh': 0,
+                'Rubber Duck': 0,
+                'Taco Bell': 0,
+                'Wow': 0
+            }
         },
         
         battle: {
@@ -1807,7 +2132,7 @@
         'Rubber Duck': 'Rubber Duck.mp3',
         'Taco Bell': 'Taco Bell.mp3',
         'Wow': 'Wow.mp3',
-        'RNintro': 'RNintro.ogg'
+        'RNintro': 'RNintro.mp3'
     };
 
     // Initialize game
@@ -1849,8 +2174,12 @@
         // Update teacher special cooldown
         setInterval(updateTeacherSpecial, 100);
         
-        // Random sound effects during gameplay
+        // Random sound effects during gameplay (with RNintro check)
         setInterval(playRandomGameSound, 10000);
+        
+        // Initialize mobile controls
+        updateMobileControls();
+        window.addEventListener('resize', updateMobileControls);
     });
 
     // Initialize audio
@@ -1870,23 +2199,58 @@
             const audio = new Audio();
             audio.src = url;
             audio.preload = 'auto';
+            audio.onended = function() {
+                gameData.sounds.currentlyPlaying.delete(name);
+            };
             gameData.sounds.audioElements[name] = audio;
         }
     }
 
-    // Play sound effect
+    // Enhanced Play sound effect with priority management
     function playSoundEffect(soundName, volume = 0.7, allowMultiple = false) {
-        if (!gameData.sounds.enabled) return;
+        if (!gameData.sounds.enabled) return null;
+        
+        const priority = gameData.sounds.soundPriority[soundName] || 0;
+        
+        // Check if RNintro is playing - if so, block all other sounds
+        if (gameData.sounds.currentlyPlaying.has('RNintro') && soundName !== 'RNintro') {
+            return null;
+        }
+        
+        // Check if any higher priority sound is playing
+        if (soundName !== 'RNintro') {
+            for (const playingSound of gameData.sounds.currentlyPlaying) {
+                const playingPriority = gameData.sounds.soundPriority[playingSound] || 0;
+                if (playingPriority > priority) {
+                    return null; // Higher priority sound is playing
+                }
+            }
+        }
+        
+        // Stop lower priority sounds if this sound has higher priority
+        if (soundName === 'RNintro' || priority > 0) {
+            gameData.sounds.currentlyPlaying.forEach(playingSound => {
+                const playingPriority = gameData.sounds.soundPriority[playingSound] || 0;
+                if (playingPriority < priority) {
+                    const audio = gameData.sounds.audioElements[playingSound];
+                    if (audio) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                    gameData.sounds.currentlyPlaying.delete(playingSound);
+                }
+            });
+        }
         
         // Check if we should play multiple instances
         if (!allowMultiple && gameData.sounds.playedSounds.has(soundName)) {
-            return;
+            return null;
         }
         
         const audio = gameData.sounds.audioElements[soundName];
         if (!audio) {
             console.warn(`Sound not found: ${soundName}`);
-            return;
+            return null;
         }
         
         try {
@@ -1898,7 +2262,9 @@
             const playPromise = audio.play();
             
             if (playPromise !== undefined) {
-                playPromise.catch(error => {
+                playPromise.then(() => {
+                    gameData.sounds.currentlyPlaying.add(soundName);
+                }).catch(error => {
                     console.log("Audio play failed:", error);
                 });
             }
@@ -1911,14 +2277,22 @@
                 gameData.sounds.playedSounds.delete(soundName);
             }, 2000);
             
+            return audio;
+            
         } catch (e) {
             console.log("Sound error:", e);
+            return null;
         }
     }
 
-    // Play random game sound
+    // Play random game sound with RNintro check
     function playRandomGameSound() {
         if (!gameData.battle.gameActive || gameData.battle.showPopup || gameData.battle.isSpawning) return;
+        
+        // Don't play random sounds if RNintro is playing
+        if (gameData.sounds.currentlyPlaying.has('RNintro')) {
+            return;
+        }
         
         const gameSounds = ['Burp', 'Rubber Duck', 'Crickets', 'Alert'];
         const randomSound = gameSounds[Math.floor(Math.random() * gameSounds.length)];
@@ -1928,15 +2302,21 @@
         }
     }
 
-    // Play teacher spawn sound
+    // Play teacher spawn sound with priority management
     function playTeacherSpawnSound(teacherName) {
         if (!gameData.sounds.enabled) return;
+        
+        // Don't play teacher spawn sound if RNintro is playing
+        if (gameData.sounds.currentlyPlaying.has('RNintro')) {
+            return;
+        }
         
         if (teacherName === "MODI" || teacherName === "PUNIT") {
             playSoundEffect('Wow', 0.8);
         } else if (teacherName === "SREELEKHA") {
             playSoundEffect('Goat Scream', 0.7);
         } else if (teacherName === "RN") {
+            // RNintro has priority - it will stop other sounds
             playSoundEffect('RNintro', 0.8);
         }
     }
@@ -1944,18 +2324,29 @@
     // Play match start sound
     function playMatchStartSound() {
         if (!gameData.sounds.enabled) return;
-        playSoundEffect('Taco Bell', 0.8);
+        // Don't play if RNintro is playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playSoundEffect('Taco Bell', 0.8);
+        }
     }
 
     // Play student death sound
     function playStudentDeathSound() {
         if (!gameData.sounds.enabled) return;
-        playSoundEffect('GTA 5 Wasted', 0.9);
+        // Don't play if RNintro is playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playSoundEffect('GTA 5 Wasted', 0.9);
+        }
     }
 
     // Play teacher death sound
     function playTeacherDeathSound(teacherName) {
         if (!gameData.sounds.enabled) return;
+        
+        // Don't play if RNintro is playing
+        if (gameData.sounds.currentlyPlaying.has('RNintro')) {
+            return;
+        }
         
         if (teacherName === "SREELEKHA") {
             playSoundEffect('No God Please No', 0.8);
@@ -2160,6 +2551,7 @@
         
         // Reset sound states
         gameData.sounds.playedSounds.clear();
+        gameData.sounds.currentlyPlaying.clear();
         
         // Reset teacher cooldowns
         gameData.teachers.forEach(teacher => {
@@ -2182,6 +2574,7 @@
         
         // Reset special attack
         updateSpecialUI();
+        updateMobileSpecialUI();
         
         // Update UI
         updateBattleUI();
@@ -2207,7 +2600,7 @@
         
         document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
         
-        // Play teacher spawn sound
+        // Play teacher spawn sound (RNintro will have priority)
         playTeacherSpawnSound(gameData.currentTeacher.name);
         
         // Preload teacher sprite images if teacher uses sprites
@@ -2359,8 +2752,10 @@
         // Show popup
         popup.style.display = 'block';
         
-        // Play teacher entrance sound
-        playSoundEffect('Alert', 0.5);
+        // Play teacher entrance sound (unless RNintro is already playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playSoundEffect('Alert', 0.5);
+        }
         
         // Auto-close after 5 seconds
         setTimeout(() => {
@@ -2379,8 +2774,10 @@
         // Resume game
         gameData.battle.gameActive = true;
         
-        // Play resume sound
-        playSoundEffect('Alert', 0.3);
+        // Play resume sound (unless RNintro is playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playSoundEffect('Alert', 0.3);
+        }
     }
 
     // Update battle UI
@@ -2452,6 +2849,7 @@
             if (gameData.battle.specialCooldown <= 0) {
                 gameData.battle.specialAttackReady = true;
                 gameData.battle.specialCooldown = 0;
+                updateMobileSpecialUI();
             }
             
             updateSpecialUI();
@@ -2480,6 +2878,11 @@
         
         const teacher = gameData.currentTeacher;
         teacher.lastSpecial = Date.now();
+        
+        // Don't trigger special attack sound if RNintro is playing
+        if (gameData.sounds.currentlyPlaying.has('RNintro')) {
+            return;
+        }
         
         // Show notification
         showSpecialAttackNotification(teacher.name + " uses " + getSpecialAttackName(teacher.specialAttack) + "!");
@@ -2574,8 +2977,10 @@
                        gameData.battle.studentPosition.y + 44, 
                        `-${scoreLost} Score`);
         
-        // Play cringe sound
-        playSoundEffect('Burp', 0.5);
+        // Play cringe sound (if RNintro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playSoundEffect('Burp', 0.5);
+        }
         
         // Remove effect
         setTimeout(() => {
@@ -2634,17 +3039,25 @@
         const originalGameActive = gameData.battle.gameActive;
         gameData.battle.gameActive = false;
         
-        // Play annoying sound repeatedly
-        const attendanceSound = setInterval(() => {
-            playSoundEffect('Alert', 0.4, true);
-        }, 500);
-        
-        // Restore after 3 seconds
-        setTimeout(() => {
-            gameData.battle.gameActive = originalGameActive;
-            effect.remove();
-            clearInterval(attendanceSound);
-        }, 3000);
+        // Play annoying sound repeatedly (if RNintro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            const attendanceSound = setInterval(() => {
+                playSoundEffect('Alert', 0.4, true);
+            }, 500);
+            
+            // Restore after 3 seconds
+            setTimeout(() => {
+                gameData.battle.gameActive = originalGameActive;
+                effect.remove();
+                clearInterval(attendanceSound);
+            }, 3000);
+        } else {
+            // If RNintro is playing, just freeze without sound
+            setTimeout(() => {
+                gameData.battle.gameActive = originalGameActive;
+                effect.remove();
+            }, 3000);
+        }
     }
 
     // Anuj: Surprise Test - Randomly damages health
@@ -2669,7 +3082,9 @@
                 if (distance < 100) {
                     gameData.battle.studentHealth -= 15;
                     updateHealthBars();
-                    playSoundEffect('Alert', 0.5);
+                    if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+                        playSoundEffect('Alert', 0.5);
+                    }
                 }
                 
                 testEffect.remove();
@@ -2702,8 +3117,10 @@
             }, 3000);
         }
         
-        // Play birthday sound
-        playSoundEffect('Ohhhhhhhhhh', 0.6);
+        // Play birthday sound (if RNintro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playSoundEffect('Ohhhhhhhhhh', 0.6);
+        }
     }
 
     // Update special attack UI
@@ -2730,6 +3147,97 @@
         }
     }
 
+    // Mobile movement with 8-direction support
+    function moveStudent(direction) {
+        if (gameData.battle.showPopup || !gameData.battle.gameActive) return;
+        
+        // Clear previous direction
+        gameData.battle.moveDirection = null;
+        
+        // Set direction components
+        switch(direction) {
+            case 'up':
+                gameData.battle.moveDirection = { x: 0, y: -1 };
+                break;
+            case 'down':
+                gameData.battle.moveDirection = { x: 0, y: 1 };
+                break;
+            case 'left':
+                gameData.battle.moveDirection = { x: -1, y: 0 };
+                break;
+            case 'right':
+                gameData.battle.moveDirection = { x: 1, y: 0 };
+                break;
+            case 'up-left':
+                gameData.battle.moveDirection = { x: -0.707, y: -0.707 };
+                break;
+            case 'up-right':
+                gameData.battle.moveDirection = { x: 0.707, y: -0.707 };
+                break;
+            case 'down-left':
+                gameData.battle.moveDirection = { x: -0.707, y: 0.707 };
+                break;
+            case 'down-right':
+                gameData.battle.moveDirection = { x: 0.707, y: 0.707 };
+                break;
+        }
+    }
+
+    function stopMoveStudent() {
+        gameData.battle.moveDirection = null;
+    }
+
+    // Mobile special attack
+    function mobileSpecialAttack() {
+        if (gameData.battle.specialAttackReady) {
+            specialAttack();
+            updateMobileSpecialUI();
+        }
+    }
+
+    // Update mobile special attack UI
+    function updateMobileSpecialUI() {
+        const specialBtn = document.getElementById('mobile-special-btn');
+        const specialIndicator = document.getElementById('mobile-special-indicator');
+        const specialLabel = document.getElementById('mobile-special-label');
+        
+        if (gameData.battle.specialAttackReady) {
+            specialBtn.classList.remove('cooldown');
+            specialIndicator.style.display = 'none';
+            specialLabel.textContent = 'READY';
+            specialLabel.style.color = '#00ff88';
+        } else {
+            specialBtn.classList.add('cooldown');
+            specialIndicator.style.display = 'flex';
+            specialLabel.textContent = 'COOLDOWN';
+            specialLabel.style.color = '#ff4757';
+            
+            // Start countdown timer
+            const cooldownSeconds = Math.ceil(gameData.battle.specialCooldown / 1000);
+            specialLabel.textContent = `${cooldownSeconds}s`;
+            
+            const countdownInterval = setInterval(() => {
+                const remaining = Math.ceil(gameData.battle.specialCooldown / 1000);
+                if (remaining > 0) {
+                    specialLabel.textContent = `${remaining}s`;
+                } else {
+                    clearInterval(countdownInterval);
+                    updateMobileSpecialUI();
+                }
+            }, 1000);
+        }
+    }
+
+    // Update mobile controls visibility
+    function updateMobileControls() {
+        const mobileControls = document.getElementById('mobile-controls');
+        if (window.innerWidth <= 768) {
+            mobileControls.classList.add('active');
+        } else {
+            mobileControls.classList.remove('active');
+        }
+    }
+
     // Game loop
     function gameLoop() {
         if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup) return;
@@ -2738,29 +3246,26 @@
         const deltaTime = now - gameData.battle.lastUpdate;
         gameData.battle.lastUpdate = now;
         
-        // Move student based on keys
+        // Move student based on keys OR mobile direction
         const speed = 5;
         
-        if (gameData.battle.keysPressed['w'] || gameData.battle.keysPressed['arrowup']) {
-            gameData.battle.studentPosition.y -= speed;
-        }
-        if (gameData.battle.keysPressed['s'] || gameData.battle.keysPressed['arrowdown']) {
-            gameData.battle.studentPosition.y += speed;
-        }
-        if (gameData.battle.keysPressed['a'] || gameData.battle.keysPressed['arrowleft']) {
-            gameData.battle.studentPosition.x -= speed;
-        }
-        if (gameData.battle.keysPressed['d'] || gameData.battle.keysPressed['arrowright']) {
-            gameData.battle.studentPosition.x += speed;
-        }
-        
-        // Also check mobile movement
         if (gameData.battle.moveDirection) {
-            switch(gameData.battle.moveDirection) {
-                case 'up': gameData.battle.studentPosition.y -= speed; break;
-                case 'down': gameData.battle.studentPosition.y += speed; break;
-                case 'left': gameData.battle.studentPosition.x -= speed; break;
-                case 'right': gameData.battle.studentPosition.x += speed; break;
+            // Mobile 8-direction movement
+            gameData.battle.studentPosition.x += gameData.battle.moveDirection.x * speed;
+            gameData.battle.studentPosition.y += gameData.battle.moveDirection.y * speed;
+        } else {
+            // Keyboard movement
+            if (gameData.battle.keysPressed['w'] || gameData.battle.keysPressed['arrowup']) {
+                gameData.battle.studentPosition.y -= speed;
+            }
+            if (gameData.battle.keysPressed['s'] || gameData.battle.keysPressed['arrowdown']) {
+                gameData.battle.studentPosition.y += speed;
+            }
+            if (gameData.battle.keysPressed['a'] || gameData.battle.keysPressed['arrowleft']) {
+                gameData.battle.studentPosition.x -= speed;
+            }
+            if (gameData.battle.keysPressed['d'] || gameData.battle.keysPressed['arrowright']) {
+                gameData.battle.studentPosition.x += speed;
             }
         }
         
@@ -2793,7 +3298,9 @@
                     if (distance < 44) { // Student radius
                         gameData.battle.studentHealth -= 5;
                         updateHealthBars();
-                        playSoundEffect('Alert', 0.4);
+                        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+                            playSoundEffect('Alert', 0.4);
+                        }
                         
                         // Remove ghost on hit
                         effect.element.remove();
@@ -2852,8 +3359,8 @@
             gameData.battle.teacherPosition.y += (dy / distance) * speed;
         }
         
-        // Random attack
-        if (Math.random() < 0.01 && distance < 250) {
+        // Random attack (if RNintro isn't playing)
+        if (Math.random() < 0.01 && distance < 250 && !gameData.sounds.currentlyPlaying.has('RNintro')) {
             teacherAttack();
         }
     }
@@ -2895,7 +3402,10 @@
             velocityX, velocityY, 'student', 10, false
         );
         
-        playSoundEffect('Alert', 0.3);
+        // Only play sound if RNintro isn't playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playSoundEffect('Alert', 0.3);
+        }
     }
 
     // Special attack with cooldown
@@ -2917,7 +3427,12 @@
         gameData.battle.specialCooldown = gameData.battle.specialMaxCooldown;
         
         updateSpecialUI();
-        playSoundEffect('Heavenly Sound', 0.5);
+        updateMobileSpecialUI();
+        
+        // Only play sound if RNintro isn't playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playSoundEffect('Heavenly Sound', 0.5);
+        }
     }
 
     // Teacher attack
@@ -2937,7 +3452,10 @@
             velocityX, velocityY, 'teacher', 8, false
         );
         
-        playSoundEffect('Alert', 0.2, true);
+        // Only play sound if RNintro isn't playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playSoundEffect('Alert', 0.2, true);
+        }
     }
 
     // Create projectile
@@ -3024,8 +3542,10 @@
                 proj.active = false;
                 gameData.battle.projectiles.splice(i, 1);
                 
-                // Play hit sound
-                playSoundEffect('Alert', 0.4, true);
+                // Play hit sound (only if RNintro isn't playing)
+                if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+                    playSoundEffect('Alert', 0.4, true);
+                }
                 
                 updateHealthBars();
                 updateBattleUI();
@@ -3081,8 +3601,8 @@
             gameData.battle.teacherHealth -= 2;
             updateHealthBars();
             
-            // Play collision sound
-            if (Math.random() < 0.3) {
+            // Play collision sound (only if RNintro isn't playing)
+            if (Math.random() < 0.3 && !gameData.sounds.currentlyPlaying.has('RNintro')) {
                 playSoundEffect('Burp', 0.3, true);
             }
         }
@@ -3096,8 +3616,10 @@
         gameData.battle.totalScore += 1000;
         gameData.battle.currentRound++;
         
-        // Play teacher death sound
-        playTeacherDeathSound(gameData.currentTeacher.name);
+        // Play teacher death sound (only if RNintro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            playTeacherDeathSound(gameData.currentTeacher.name);
+        }
         
         // Show spawn screen
         const spawnScreen = document.getElementById('next-teacher-spawn');
@@ -3172,16 +3694,6 @@
         }, 300);
     }
 
-    // Mobile controls
-    function moveStudent(direction) {
-        if (gameData.battle.showPopup) return;
-        gameData.battle.moveDirection = direction;
-    }
-
-    function stopMoveStudent() {
-        gameData.battle.moveDirection = null;
-    }
-
     // End battle
     function endBattle(winner) {
         gameData.battle.gameActive = false;
@@ -3211,12 +3723,14 @@
         
         document.getElementById('battle-summary').textContent = summary;
         
-        // Play end game sound
-        if (winner === 'student') {
-            playSoundEffect('Heavenly Sound', 0.8);
-            playSoundEffect('Crowd Laughing', 0.5);
-        } else {
-            playStudentDeathSound(); // Play GTA 5 Wasted when student dies
+        // Play end game sound (only if RNintro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+            if (winner === 'student') {
+                playSoundEffect('Heavenly Sound', 0.8);
+                playSoundEffect('Crowd Laughing', 0.5);
+            } else {
+                playStudentDeathSound(); // Play GTA 5 Wasted when student dies
+            }
         }
         
         // Update high scores if student won and score is high enough
