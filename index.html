@@ -1010,8 +1010,8 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* RN Video Overlay */
-        .rn-video-overlay {
+        /* Video Overlay */
+        .video-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -1024,7 +1024,7 @@
             justify-content: center;
         }
 
-        .rn-video-container {
+        .video-container {
             width: 90%;
             max-width: 800px;
             height: 80%;
@@ -1032,16 +1032,23 @@
             position: relative;
         }
 
-        .rn-video {
+        .video-player {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            border: 5px solid #ff6b9d;
             border-radius: 20px;
             box-shadow: 0 0 50px rgba(255, 107, 157, 0.8);
         }
 
-        .rn-video-skip {
+        .rn-video {
+            border: 5px solid #ff6b9d;
+        }
+
+        .modi-video {
+            border: 5px solid #00d4ff;
+        }
+
+        .video-skip {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -1055,8 +1062,16 @@
             z-index: 10001;
         }
 
-        .rn-video-skip:hover {
+        .modi-skip {
+            background: rgba(0, 212, 255, 0.8);
+        }
+
+        .video-skip:hover {
             background: rgba(255, 107, 157, 1);
+        }
+
+        .modi-skip:hover {
+            background: rgba(0, 212, 255, 1);
         }
 
         /* Victory Screen */
@@ -1412,6 +1427,93 @@
         .result-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Scary Text Overlay for RN Video */
+        .rn-scary-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        .scary-text-line {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            color: #ff0000;
+            text-align: center;
+            text-shadow: 
+                0 0 20px #ff0000,
+                0 0 40px #ff0000,
+                0 0 60px #ff0000;
+            animation: scaryPulse 2s infinite alternate;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+        }
+
+        .scary-text-line:nth-child(2) {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: #ff6b9d;
+            text-shadow: 
+                0 0 15px #ff6b9d,
+                0 0 30px #ff6b9d;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes scaryPulse {
+            0% {
+                opacity: 0.3;
+                transform: scale(0.95);
+                text-shadow: 
+                    0 0 10px #ff0000,
+                    0 0 20px #ff0000;
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.05);
+                text-shadow: 
+                    0 0 30px #ff0000,
+                    0 0 60px #ff0000,
+                    0 0 90px #ff0000;
+            }
+        }
+
+        /* Add a glitch effect for extra scariness */
+        .rn-scary-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 0, 0, 0.1) 50%,
+                transparent 100%
+            );
+            animation: glitchMove 3s infinite linear;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes glitchMove {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Make video slightly transparent to show text better */
+        .rn-video {
+            opacity: 0.9;
         }
 
         /* Responsive Design - MOBILE OPTIMIZED */
@@ -1777,94 +1879,6 @@
         .pad-btn:active, .action-btn-circle:active {
             animation: buttonPress 0.2s ease-out;
         }
-        /* Scary Text Overlay for RN Video */
-.rn-scary-text {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    pointer-events: none;
-}
-
-.scary-text-line {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 900;
-    color: #ff0000;
-    text-align: center;
-    text-shadow: 
-        0 0 20px #ff0000,
-        0 0 40px #ff0000,
-        0 0 60px #ff0000;
-    animation: scaryPulse 2s infinite alternate;
-    margin-bottom: 20px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-family: 'Impact', 'Arial Black', sans-serif;
-}
-
-.scary-text-line:nth-child(2) {
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    color: #ff6b9d;
-    text-shadow: 
-        0 0 15px #ff6b9d,
-        0 0 30px #ff6b9d;
-    animation-delay: 0.5s;
-}
-
-@keyframes scaryPulse {
-    0% {
-        opacity: 0.3;
-        transform: scale(0.95);
-        text-shadow: 
-            0 0 10px #ff0000,
-            0 0 20px #ff0000;
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1.05);
-        text-shadow: 
-            0 0 30px #ff0000,
-            0 0 60px #ff0000,
-            0 0 90px #ff0000;
-    }
-}
-
-/* Add a glitch effect for extra scariness */
-.rn-scary-text::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 0, 0, 0.1) 50%,
-        transparent 100%
-    );
-    animation: glitchMove 3s infinite linear;
-    pointer-events: none;
-    z-index: -1;
-}
-
-@keyframes glitchMove {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-/* Make video slightly transparent to show text better */
-.rn-video {
-    opacity: 0.9;
-}
-
-
     </style>
 </head>
 <body>
@@ -1889,18 +1903,29 @@
         </div>
     </div>
     
+    <!-- Modi Video Overlay -->
+    <div id="modi-video-overlay" class="video-overlay">
+        <div class="video-container">
+            <video id="modi-video" class="video-player modi-video">
+                <source src="ModiVideo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <button class="video-skip modi-skip" onclick="skipModiVideo()">SKIP (3)</button>
+        </div>
+    </div>
+    
     <!-- RN Video Overlay -->
-    <div id="rn-video-overlay" class="rn-video-overlay">
-        <div class="rn-video-container">
-	    <div id="rn-scary-text" class="rn-scary-text" style="display: none;">
-            	<div class="scary-text-line">HE IS COMING...</div>
-            	<div class="scary-text-line">THE OG APPROACHES</div>
+    <div id="rn-video-overlay" class="video-overlay">
+        <div class="video-container">
+            <div id="rn-scary-text" class="rn-scary-text" style="display: none;">
+                <div class="scary-text-line">HE IS COMING...</div>
+                <div class="scary-text-line">THE OG APPROACHES</div>
             </div>
-            <video id="rn-video" class="rn-video">
+            <video id="rn-video" class="video-player rn-video">
                 <source src="RNVideo.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-            <button class="rn-video-skip" onclick="skipRNVideo()">SKIP (3)</button>
+            <button class="video-skip" onclick="skipRNVideo()">SKIP (3)</button>
         </div>
     </div>
     
@@ -2310,7 +2335,7 @@
             { id: 16, name: "TAMMO", image: "https://i.postimg.cc/1t6HX5tJ/Tammo-Avatar.png", health: 100 }
         ],
         
-        // Original teacher list - RN is ID 3
+        // SREELEKHA (id: 2) will be first, MODI (id: 1) second, RN (id: 3) third
         teachers: [
             { 
                 id: 1, 
@@ -2338,7 +2363,9 @@
                     walkFrame: 0,
                     walkTimer: 0,
                     walkSpeed: 300
-                }
+                },
+                hasVideo: true,
+                videoFile: "ModiVideo.mp4"
             },
             { 
                 id: 2, 
@@ -2394,7 +2421,10 @@
                     walkFrame: 0,
                     walkTimer: 0,
                     walkSpeed: 300
-                }
+                },
+                hasVideo: true,
+                videoFile: "RNVideo.mp4",
+                hasScaryText: true
             },
             { 
                 id: 4, 
@@ -2466,7 +2496,9 @@
         currentTeacher: null,
         remainingTeachers: [], // Will hold teachers that haven't been fought yet
         teacherOrder: [], // Will define the order teachers appear
-        rnIndex: 1, // RN should be second (index 1 in 0-based array)
+        sreelekhaIndex: 0, // SREELEKHA should be first
+        modiIndex: 1, // MODI should be second
+        rnIndex: 2, // RN should be third
         
         // Enhanced Sound system
         sounds: {
@@ -2481,6 +2513,7 @@
             // Priority levels: 0 = normal, 1 = important, 2 = critical (RNintro)
             soundPriority: {
                 'RNintro': 2,
+                'ModiIntro': 2,
                 'GTA 5 Wasted': 1,
                 'Inception': 1,
                 'Heavenly Sound': 1,
@@ -2526,7 +2559,8 @@
             teacherWalking: false,
             teacherLastWalkUpdate: 0,
             // Video tracking
-            playingRNVideo: false,
+            playingVideo: false,
+            videoType: null, // 'modi' or 'rn'
             videoSkipTimer: null,
             videoSkipSeconds: 3,
             skipButton: null
@@ -2550,7 +2584,8 @@
         'Rubber Duck': 'Rubber Duck.mp3',
         'Taco Bell': 'Taco Bell.mp3',
         'Wow': 'Wow.mp3',
-        'RNintro': 'RNintro.mp3'
+        'RNintro': 'RNintro.mp3',
+        'ModiIntro': 'ModiIntro.mp3'
     };
 
     // Initialize game
@@ -2583,22 +2618,39 @@
             }
         });
         
-        // Set up video event listeners
+        // Set up video event listeners for Modi video
+        const modiVideo = document.getElementById('modi-video');
+        if (modiVideo) {
+            modiVideo.removeAttribute('controls');
+            
+            modiVideo.addEventListener('ended', function() {
+                console.log('Modi Video ended');
+                endVideo('modi');
+            });
+            
+            modiVideo.addEventListener('error', function(e) {
+                console.log('Modi Video error:', e);
+                skipVideo('modi');
+            });
+            
+            modiVideo.addEventListener('canplay', function() {
+                console.log('Modi Video can play');
+            });
+        }
+        
+        // Set up video event listeners for RN video
         const rnVideo = document.getElementById('rn-video');
         if (rnVideo) {
-            // Remove controls attribute to hide controls
             rnVideo.removeAttribute('controls');
             
-            // Add event listeners for video
             rnVideo.addEventListener('ended', function() {
                 console.log('RN Video ended');
-                endRNVideo();
+                endVideo('rn');
             });
             
             rnVideo.addEventListener('error', function(e) {
                 console.log('RN Video error:', e);
-                // If video fails, skip it
-                skipRNVideo();
+                skipVideo('rn');
             });
             
             rnVideo.addEventListener('canplay', function() {
@@ -2615,7 +2667,7 @@
         // Update teacher special cooldown
         setInterval(updateTeacherSpecial, 100);
         
-        // Random sound effects during gameplay (with RNintro check)
+        // Random sound effects during gameplay (with intro check)
         setInterval(playRandomGameSound, 10000);
         
         // Initialize mobile controls
@@ -2653,13 +2705,14 @@
         
         const priority = gameData.sounds.soundPriority[soundName] || 0;
         
-        // Check if RNintro is playing - if so, block all other sounds
-        if (gameData.sounds.currentlyPlaying.has('RNintro') && soundName !== 'RNintro') {
+        // Check if any high priority intro is playing
+        if ((gameData.sounds.currentlyPlaying.has('RNintro') || gameData.sounds.currentlyPlaying.has('ModiIntro')) && 
+            !['RNintro', 'ModiIntro'].includes(soundName)) {
             return null;
         }
         
         // Check if any higher priority sound is playing
-        if (soundName !== 'RNintro') {
+        if (!['RNintro', 'ModiIntro'].includes(soundName)) {
             for (const playingSound of gameData.sounds.currentlyPlaying) {
                 const playingPriority = gameData.sounds.soundPriority[playingSound] || 0;
                 if (playingPriority > priority) {
@@ -2669,7 +2722,7 @@
         }
         
         // Stop lower priority sounds if this sound has higher priority
-        if (soundName === 'RNintro' || priority > 0) {
+        if (['RNintro', 'ModiIntro'].includes(soundName) || priority > 0) {
             gameData.sounds.currentlyPlaying.forEach(playingSound => {
                 const playingPriority = gameData.sounds.soundPriority[playingSound] || 0;
                 if (playingPriority < priority) {
@@ -2726,12 +2779,12 @@
         }
     }
 
-    // Play random game sound with RNintro check
+    // Play random game sound with intro check
     function playRandomGameSound() {
         if (!gameData.battle.gameActive || gameData.battle.showPopup || gameData.battle.isSpawning) return;
         
-        // Don't play random sounds if RNintro is playing
-        if (gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Don't play random sounds if any intro is playing
+        if (gameData.sounds.currentlyPlaying.has('RNintro') || gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             return;
         }
         
@@ -2747,8 +2800,8 @@
     function playTeacherSpawnSound(teacherName) {
         if (!gameData.sounds.enabled) return;
         
-        // Don't play teacher spawn sound if RNintro is playing
-        if (gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Don't play teacher spawn sound if any intro is playing
+        if (gameData.sounds.currentlyPlaying.has('RNintro') || gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             return;
         }
         
@@ -2765,8 +2818,8 @@
     // Play match start sound
     function playMatchStartSound() {
         if (!gameData.sounds.enabled) return;
-        // Don't play if RNintro is playing
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Don't play if any intro is playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playSoundEffect('Taco Bell', 0.8);
         }
     }
@@ -2774,8 +2827,8 @@
     // Play student death sound
     function playStudentDeathSound() {
         if (!gameData.sounds.enabled) return;
-        // Don't play if RNintro is playing
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Don't play if any intro is playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playSoundEffect('GTA 5 Wasted', 0.9);
         }
     }
@@ -2784,8 +2837,8 @@
     function playTeacherDeathSound(teacherName) {
         if (!gameData.sounds.enabled) return;
         
-        // Don't play if RNintro is playing
-        if (gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Don't play if any intro is playing
+        if (gameData.sounds.currentlyPlaying.has('RNintro') || gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             return;
         }
         
@@ -2968,24 +3021,75 @@
         gameData.remainingTeachers = [...gameData.teachers]; // Copy all teachers
         gameData.teacherOrder = [];
         
-        // Create teacher order with RN second
-        const nonRNTeachers = gameData.remainingTeachers.filter(t => t.id !== 3); // All except RN
+        // Create teacher order: SREELEKHA first, MODI second, RN third, then others
+        const sreelekhaTeacher = gameData.remainingTeachers.find(t => t.id === 2); // SREELEKHA
+        const modiTeacher = gameData.remainingTeachers.find(t => t.id === 1); // MODI
         const rnTeacher = gameData.remainingTeachers.find(t => t.id === 3); // RN
+        const otherTeachers = gameData.remainingTeachers.filter(t => t.id !== 1 && t.id !== 2 && t.id !== 3); // All except SREELEKHA, MODI, RN
         
-        // Shuffle non-RN teachers
-        shuffleArray(nonRNTeachers);
+        // Shuffle other teachers
+        shuffleArray(otherTeachers);
         
-        // Insert RN at position 1 (second)
-        gameData.teacherOrder.push(nonRNTeachers[0]); // First teacher
+        // Create order: SREELEKHA first, MODI second, RN third, then others
+        if (sreelekhaTeacher) {
+            gameData.teacherOrder.push(sreelekhaTeacher); // SREELEKHA first
+        }
+        if (modiTeacher) {
+            gameData.teacherOrder.push(modiTeacher); // MODI second
+        }
         if (rnTeacher) {
-            gameData.teacherOrder.push(rnTeacher); // RN second
+            gameData.teacherOrder.push(rnTeacher); // RN third
         }
         // Add remaining teachers
-        for (let i = 1; i < nonRNTeachers.length; i++) {
-            gameData.teacherOrder.push(nonRNTeachers[i]);
+        for (let i = 0; i < otherTeachers.length; i++) {
+            gameData.teacherOrder.push(otherTeachers[i]);
         }
         
         // Reset battle state
+        resetBattleState();
+        
+        // Reset sound states
+        gameData.sounds.playedSounds.clear();
+        gameData.sounds.currentlyPlaying.clear();
+        
+        // Reset teacher cooldowns
+        gameData.teachers.forEach(teacher => {
+            teacher.lastSpecial = 0;
+            if (teacher.sprite) {
+                teacher.sprite.currentSprite = 'idle';
+                teacher.sprite.walkFrame = 0;
+                teacher.sprite.walkTimer = 0;
+            }
+        });
+        
+        // Set student
+        document.getElementById('student-name').textContent = gameData.selectedStudent.name;
+        
+        // Select first teacher from the order (SREELEKHA)
+        selectNextTeacher();
+        
+        // Create character elements
+        createCharacterElements();
+        
+        // Reset special attack
+        updateSpecialUI();
+        updateMobileSpecialUI();
+        
+        // Update UI
+        updateBattleUI();
+        updateHealthBars();
+        
+        // Play match start sound
+        playMatchStartSound();
+        
+        // Show teacher popup for first teacher
+        setTimeout(() => {
+            showTeacherPopup();
+        }, 500);
+    }
+
+    // Reset battle state
+    function resetBattleState() {
         gameData.battle = {
             studentHealth: 100,
             teacherHealth: 100,
@@ -3011,50 +3115,12 @@
             teacherSpriteImages: {},
             teacherWalking: false,
             teacherLastWalkUpdate: 0,
-            playingRNVideo: false,
+            playingVideo: false,
+            videoType: null,
             videoSkipTimer: null,
             videoSkipSeconds: 3,
             skipButton: null
         };
-        
-        // Reset sound states
-        gameData.sounds.playedSounds.clear();
-        gameData.sounds.currentlyPlaying.clear();
-        
-        // Reset teacher cooldowns
-        gameData.teachers.forEach(teacher => {
-            teacher.lastSpecial = 0;
-            if (teacher.sprite) {
-                teacher.sprite.currentSprite = 'idle';
-                teacher.sprite.walkFrame = 0;
-                teacher.sprite.walkTimer = 0;
-            }
-        });
-        
-        // Set student
-        document.getElementById('student-name').textContent = gameData.selectedStudent.name;
-        
-        // Select first teacher from the order
-        selectNextTeacher();
-        
-        // Create character elements
-        createCharacterElements();
-        
-        // Reset special attack
-        updateSpecialUI();
-        updateMobileSpecialUI();
-        
-        // Update UI
-        updateBattleUI();
-        updateHealthBars();
-        
-        // Play match start sound
-        playMatchStartSound();
-        
-        // Show teacher popup for first teacher
-        setTimeout(() => {
-            showTeacherPopup();
-        }, 500);
     }
 
     // Shuffle array function
@@ -3078,10 +3144,14 @@
         
         document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
         
-        // Check if this is RN (id: 3)
-        if (gameData.currentTeacher.id === 3) {
-            // Play RN video before spawning RN
-            playRNVideo();
+        // Check if this teacher has a video
+        if (gameData.currentTeacher.hasVideo) {
+            // Play video before spawning
+            if (gameData.currentTeacher.id === 1) { // MODI
+                playVideo('modi');
+            } else if (gameData.currentTeacher.id === 3) { // RN
+                playVideo('rn');
+            }
         } else {
             // Play regular teacher spawn sound
             playTeacherSpawnSound(gameData.currentTeacher.name);
@@ -3090,6 +3160,9 @@
             if (gameData.currentTeacher.useSprite) {
                 preloadTeacherSprites();
             }
+            
+            // Continue with normal spawn
+            continueAfterVideo();
         }
     }
 
@@ -3112,132 +3185,165 @@
         playSoundEffect('Crowd Laughing', 0.6);
     }
 
-    // Play RN video
-    function playRNVideo() {
-    console.log('Playing RN Video');
-    gameData.battle.playingRNVideo = true;
-    gameData.battle.gameActive = false;
-    
-    const videoOverlay = document.getElementById('rn-video-overlay');
-    const rnVideo = document.getElementById('rn-video');
-    const skipButton = document.querySelector('.rn-video-skip');
-    const scaryText = document.getElementById('rn-scary-text');
-    
-    // Show video overlay
-    videoOverlay.style.display = 'flex';
-    
-    // Show scary text immediately
-    scaryText.style.display = 'flex';
-    
-    // Start skip timer
-    let skipSeconds = 3;
-    skipButton.textContent = `SKIP (${skipSeconds})`;
-    skipButton.style.display = 'block';
-    
-    // Clear any existing timer
-    if (gameData.battle.videoSkipTimer) {
-        clearInterval(gameData.battle.videoSkipTimer);
+    // Play video for teacher
+    function playVideo(videoType) {
+        console.log(`Playing ${videoType.toUpperCase()} Video`);
+        gameData.battle.playingVideo = true;
+        gameData.battle.videoType = videoType;
+        gameData.battle.gameActive = false;
+        
+        const videoOverlay = document.getElementById(`${videoType}-video-overlay`);
+        const video = document.getElementById(`${videoType}-video`);
+        const skipButton = document.querySelector(`#${videoType}-video-overlay .video-skip`);
+        
+        // Show video overlay
+        videoOverlay.style.display = 'flex';
+        
+        // For RN video, show scary text
+        if (videoType === 'rn') {
+            const scaryText = document.getElementById('rn-scary-text');
+            scaryText.style.display = 'flex';
+        }
+        
+        // Start skip timer
+        let skipSeconds = 3;
+        skipButton.textContent = `SKIP (${skipSeconds})`;
+        skipButton.style.display = 'block';
+        
+        // Clear any existing timer
+        if (gameData.battle.videoSkipTimer) {
+            clearInterval(gameData.battle.videoSkipTimer);
+        }
+        
+        gameData.battle.videoSkipTimer = setInterval(() => {
+            skipSeconds--;
+            if (skipSeconds <= 0) {
+                clearInterval(gameData.battle.videoSkipTimer);
+                gameData.battle.videoSkipTimer = null;
+                skipButton.textContent = 'SKIP';
+                
+                // For RN video, hide scary text after 3 seconds
+                if (videoType === 'rn') {
+                    setTimeout(() => {
+                        const scaryText = document.getElementById('rn-scary-text');
+                        scaryText.style.display = 'none';
+                    }, 500);
+                }
+            } else {
+                skipButton.textContent = `SKIP (${skipSeconds})`;
+            }
+        }, 1000);
+        
+        // Configure and play video
+        video.currentTime = 0;
+        video.volume = 1.0;
+        video.muted = false;
+        
+        // Play video with promise handling
+        const playPromise = video.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log(`${videoType.toUpperCase()} Video started playing`);
+            }).catch(error => {
+                console.log(`${videoType.toUpperCase()} Video play failed:`, error);
+                // If video fails to play, skip it after 1 second
+                setTimeout(() => {
+                    skipVideo(videoType);
+                }, 1000);
+            });
+        }
     }
-    
-    gameData.battle.videoSkipTimer = setInterval(() => {
-        skipSeconds--;
-        if (skipSeconds <= 0) {
+
+    // Skip video
+    function skipVideo(videoType) {
+        console.log(`Skipping ${videoType.toUpperCase()} Video`);
+        const videoOverlay = document.getElementById(`${videoType}-video-overlay`);
+        const video = document.getElementById(`${videoType}-video`);
+        
+        // For RN video, hide scary text
+        if (videoType === 'rn') {
+            const scaryText = document.getElementById('rn-scary-text');
+            scaryText.style.display = 'none';
+        }
+        
+        // Clear skip timer
+        if (gameData.battle.videoSkipTimer) {
             clearInterval(gameData.battle.videoSkipTimer);
             gameData.battle.videoSkipTimer = null;
-            skipButton.textContent = 'SKIP';
-            
-            // Hide scary text after initial 3 seconds
-            setTimeout(() => {
-                scaryText.style.display = 'none';
-            }, 500);
-        } else {
-            skipButton.textContent = `SKIP (${skipSeconds})`;
         }
-    }, 1000);
-    
-    // Configure and play video
-    rnVideo.currentTime = 0;
-    rnVideo.volume = 1.0;
-    rnVideo.muted = false;
-    
-    // Remove controls if they exist
-    rnVideo.removeAttribute('controls');
-    
-    // Play video with promise handling
-    const playPromise = rnVideo.play();
-    
-    if (playPromise !== undefined) {
-        playPromise.then(() => {
-            console.log('RN Video started playing');
-        }).catch(error => {
-            console.log('RN Video play failed:', error);
-            // If video fails to play, skip it after 1 second
-            setTimeout(() => {
-                skipRNVideo();
-            }, 1000);
-        });
+        
+        // Hide video overlay
+        videoOverlay.style.display = 'none';
+        
+        // Pause and reset video
+        video.pause();
+        video.currentTime = 0;
+        
+        // Continue with teacher spawn
+        continueAfterVideo();
     }
-}
+
+    // End video and continue
+    function endVideo(videoType) {
+        console.log(`${videoType.toUpperCase()} Video ended, spawning teacher`);
+        const videoOverlay = document.getElementById(`${videoType}-video-overlay`);
+        const video = document.getElementById(`${videoType}-video`);
+        
+        // For RN video, hide scary text
+        if (videoType === 'rn') {
+            const scaryText = document.getElementById('rn-scary-text');
+            scaryText.style.display = 'none';
+        }
+        
+        // Clear skip timer
+        if (gameData.battle.videoSkipTimer) {
+            clearInterval(gameData.battle.videoSkipTimer);
+            gameData.battle.videoSkipTimer = null;
+        }
+        
+        // Hide video overlay
+        videoOverlay.style.display = 'none';
+        
+        // Pause and reset video
+        video.pause();
+        video.currentTime = 0;
+        
+        // Continue with teacher spawn
+        continueAfterVideo();
+    }
+
+    // Skip Modi video
+    function skipModiVideo() {
+        skipVideo('modi');
+    }
 
     // Skip RN video
-   function skipRNVideo() {
-    console.log('Skipping RN Video');
-    const videoOverlay = document.getElementById('rn-video-overlay');
-    const rnVideo = document.getElementById('rn-video');
-    const scaryText = document.getElementById('rn-scary-text');
-    
-    // Hide scary text
-    scaryText.style.display = 'none';
-    
-    // Clear skip timer
-    if (gameData.battle.videoSkipTimer) {
-        clearInterval(gameData.battle.videoSkipTimer);
-        gameData.battle.videoSkipTimer = null;
+    function skipRNVideo() {
+        skipVideo('rn');
     }
-    
-    // Hide video overlay
-    videoOverlay.style.display = 'none';
-    
-    // Pause and reset video
-    rnVideo.pause();
-    rnVideo.currentTime = 0;
-    
-    // Continue with RN spawn
-    spawnAfterRNVideo();
-}
 
-    // End RN video and spawn RN
-    function endRNVideo() {
-    console.log('RN Video ended, spawning RN');
-    const videoOverlay = document.getElementById('rn-video-overlay');
-    const rnVideo = document.getElementById('rn-video');
-    const scaryText = document.getElementById('rn-scary-text');
-    
-    // Hide scary text
-    scaryText.style.display = 'none';
-    
-    // Clear skip timer
-    if (gameData.battle.videoSkipTimer) {
-        clearInterval(gameData.battle.videoSkipTimer);
-        gameData.battle.videoSkipTimer = null;
+    // End Modi video
+    function endModiVideo() {
+        endVideo('modi');
     }
-    
-    // Hide video overlay
-    videoOverlay.style.display = 'none';
-    
-    // Pause and reset video
-    rnVideo.pause();
-    rnVideo.currentTime = 0;
-    
-    // Continue with RN spawn
-    spawnAfterRNVideo();
-}
-    // Spawn after RN video ends
-    function spawnAfterRNVideo() {
-        gameData.battle.playingRNVideo = false;
+
+    // End RN video
+    function endRNVideo() {
+        endVideo('rn');
+    }
+
+    // Continue after video ends
+    function continueAfterVideo() {
+        gameData.battle.playingVideo = false;
+        gameData.battle.videoType = null;
         
-        // Play RN intro sound
-        playSoundEffect('RNintro', 0.8);
+        // Play appropriate intro sound
+        if (gameData.currentTeacher.id === 1) { // MODI
+            playSoundEffect('ModiIntro', 0.8);
+        } else if (gameData.currentTeacher.id === 3) { // RN
+            playSoundEffect('RNintro', 0.8);
+        }
         
         // Preload teacher sprite images if teacher uses sprites
         if (gameData.currentTeacher.useSprite) {
@@ -3278,7 +3384,7 @@
         gameData.battle.isSpawning = false;
         gameData.battle.gameActive = true;
         
-        // Show teacher popup for RN
+        // Show teacher popup for the teacher
         setTimeout(() => {
             showTeacherPopup();
         }, 300);
@@ -3427,8 +3533,8 @@
         // Show popup
         popup.style.display = 'block';
         
-        // Play teacher entrance sound (unless RNintro is already playing)
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Play teacher entrance sound (unless intro is already playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playSoundEffect('Alert', 0.5);
         }
         
@@ -3449,8 +3555,8 @@
         // Resume game
         gameData.battle.gameActive = true;
         
-        // Play resume sound (unless RNintro is playing)
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Play resume sound (unless intro is playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playSoundEffect('Alert', 0.3);
         }
     }
@@ -3554,8 +3660,8 @@
         const teacher = gameData.currentTeacher;
         teacher.lastSpecial = Date.now();
         
-        // Don't trigger special attack sound if RNintro is playing
-        if (gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Don't trigger special attack sound if intro is playing
+        if (gameData.sounds.currentlyPlaying.has('RNintro') || gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             return;
         }
         
@@ -3652,8 +3758,8 @@
                        gameData.battle.studentPosition.y + 35, 
                        `-${scoreLost} Score`);
         
-        // Play cringe sound (if RNintro isn't playing)
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Play cringe sound (if intro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playSoundEffect('Burp', 0.5);
         }
         
@@ -3714,8 +3820,8 @@
         const originalGameActive = gameData.battle.gameActive;
         gameData.battle.gameActive = false;
         
-        // Play annoying sound repeatedly (if RNintro isn't playing)
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Play annoying sound repeatedly (if intro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             const attendanceSound = setInterval(() => {
                 playSoundEffect('Alert', 0.4, true);
             }, 500);
@@ -3727,7 +3833,7 @@
                 clearInterval(attendanceSound);
             }, 3000);
         } else {
-            // If RNintro is playing, just freeze without sound
+            // If intro is playing, just freeze without sound
             setTimeout(() => {
                 gameData.battle.gameActive = originalGameActive;
                 effect.remove();
@@ -3757,7 +3863,7 @@
                 if (distance < 100) {
                     gameData.battle.studentHealth -= 15;
                     updateHealthBars();
-                    if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+                    if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
                         playSoundEffect('Alert', 0.5);
                     }
                 }
@@ -3792,8 +3898,8 @@
             }, 3000);
         }
         
-        // Play birthday sound (if RNintro isn't playing)
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Play birthday sound (if intro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playSoundEffect('Ohhhhhhhhhh', 0.6);
         }
     }
@@ -3915,7 +4021,7 @@
 
     // Game loop
     function gameLoop() {
-        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || gameData.battle.playingRNVideo) return;
+        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || gameData.battle.playingVideo) return;
         
         const now = Date.now();
         const deltaTime = now - gameData.battle.lastUpdate;
@@ -3973,7 +4079,7 @@
                     if (distance < 44) { // Student radius
                         gameData.battle.studentHealth -= 5;
                         updateHealthBars();
-                        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+                        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
                             playSoundEffect('Alert', 0.4);
                         }
                         
@@ -4034,8 +4140,8 @@
             gameData.battle.teacherPosition.y += (dy / distance) * speed;
         }
         
-        // Random attack (if RNintro isn't playing)
-        if (Math.random() < 0.01 && distance < 250 && !gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Random attack (if intro isn't playing)
+        if (Math.random() < 0.01 && distance < 250 && !gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             teacherAttack();
         }
     }
@@ -4061,7 +4167,7 @@
 
     // Shoot projectile
     function shootProjectile() {
-        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || gameData.battle.playingRNVideo) return;
+        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || gameData.battle.playingVideo) return;
         
         // Calculate direction towards teacher
         const dx = gameData.battle.teacherPosition.x - gameData.battle.studentPosition.x;
@@ -4077,15 +4183,15 @@
             velocityX, velocityY, 'student', 10, false
         );
         
-        // Only play sound if RNintro isn't playing
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Only play sound if intro isn't playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playSoundEffect('Alert', 0.3);
         }
     }
 
     // Special attack with cooldown
     function specialAttack() {
-        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || !gameData.battle.specialAttackReady || gameData.battle.playingRNVideo) return;
+        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || !gameData.battle.specialAttackReady || gameData.battle.playingVideo) return;
         
         // Create 5 spread projectiles
         for (let i = -2; i <= 2; i++) {
@@ -4104,15 +4210,15 @@
         updateSpecialUI();
         updateMobileSpecialUI();
         
-        // Only play sound if RNintro isn't playing
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Only play sound if intro isn't playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playSoundEffect('Heavenly Sound', 0.5);
         }
     }
 
     // Teacher attack
     function teacherAttack() {
-        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || gameData.battle.playingRNVideo) return;
+        if (!gameData.battle.gameActive || gameData.battle.isSpawning || gameData.battle.showPopup || gameData.battle.playingVideo) return;
         
         const dx = gameData.battle.studentPosition.x - gameData.battle.teacherPosition.x;
         const dy = gameData.battle.studentPosition.y - gameData.battle.teacherPosition.y;
@@ -4127,8 +4233,8 @@
             velocityX, velocityY, 'teacher', 8, false
         );
         
-        // Only play sound if RNintro isn't playing
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Only play sound if intro isn't playing
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playSoundEffect('Alert', 0.2, true);
         }
     }
@@ -4218,8 +4324,8 @@
                 proj.active = false;
                 gameData.battle.projectiles.splice(i, 1);
                 
-                // Play hit sound (only if RNintro isn't playing)
-                if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+                // Play hit sound (only if intro isn't playing)
+                if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
                     playSoundEffect('Alert', 0.4, true);
                 }
                 
@@ -4280,8 +4386,8 @@
             gameData.battle.teacherHealth -= 2;
             updateHealthBars();
             
-            // Play collision sound (only if RNintro isn't playing)
-            if (Math.random() < 0.3 && !gameData.sounds.currentlyPlaying.has('RNintro')) {
+            // Play collision sound (only if intro isn't playing)
+            if (Math.random() < 0.3 && !gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
                 playSoundEffect('Burp', 0.3, true);
             }
         }
@@ -4295,8 +4401,8 @@
         gameData.battle.totalScore += 1000;
         gameData.battle.currentRound++;
         
-        // Play teacher death sound (only if RNintro isn't playing)
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Play teacher death sound (only if intro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             playTeacherDeathSound(gameData.currentTeacher.name);
         }
         
@@ -4333,48 +4439,6 @@
                 
                 // Spawn new teacher
                 selectNextTeacher();
-                
-                // Check if we need to play RN video
-                if (!gameData.battle.playingRNVideo) {
-                    // If not playing video, continue with normal spawn
-                    const arena = document.getElementById('battle-arena');
-                    const arenaRect = arena.getBoundingClientRect();
-                    
-                    gameData.battle.studentPosition.x = 50;
-                    gameData.battle.studentPosition.y = arenaRect.height / 2 - (window.innerWidth <= 768 ? 30 : 44);
-                    gameData.battle.teacherPosition.x = arenaRect.width - 120;
-                    gameData.battle.teacherPosition.y = arenaRect.height / 2 - (window.innerWidth <= 768 ? 28 : 35);
-                    
-                    // Reset teacher health (increase with rounds)
-                    gameData.battle.teacherHealth = 100 + (gameData.battle.currentRound - 1) * 20;
-                    
-                    // Heal student slightly between rounds
-                    gameData.battle.studentHealth = Math.min(100, gameData.battle.studentHealth + 10);
-                    
-                    // Remove old teacher element
-                    const oldTeacherSquare = document.getElementById('teacher-square');
-                    const oldTeacherSprite = document.getElementById('teacher-sprite');
-                    if (oldTeacherSquare) oldTeacherSquare.remove();
-                    if (oldTeacherSprite) oldTeacherSprite.remove();
-                    
-                    // Create new teacher element based on type
-                    createCharacterElements();
-                    
-                    // Update UI
-                    document.getElementById('teacher-name').textContent = gameData.currentTeacher.name;
-                    updatePositions();
-                    updateBattleUI();
-                    updateHealthBars();
-                    
-                    // Resume game
-                    gameData.battle.isSpawning = false;
-                    gameData.battle.gameActive = true;
-                    
-                    // Show teacher popup for new teacher
-                    setTimeout(() => {
-                        showTeacherPopup();
-                    }, 300);
-                }
             }
         }, 1000);
     }
@@ -4408,8 +4472,8 @@
         
         document.getElementById('battle-summary').textContent = summary;
         
-        // Play end game sound (only if RNintro isn't playing)
-        if (!gameData.sounds.currentlyPlaying.has('RNintro')) {
+        // Play end game sound (only if intro isn't playing)
+        if (!gameData.sounds.currentlyPlaying.has('RNintro') && !gameData.sounds.currentlyPlaying.has('ModiIntro')) {
             if (winner === 'student') {
                 playSoundEffect('Heavenly Sound', 0.8);
                 playSoundEffect('Crowd Laughing', 0.5);
